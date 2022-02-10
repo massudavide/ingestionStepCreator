@@ -6,7 +6,7 @@ import scala.util.matching.Regex
 
 object sqoopAux {
 
-  def populatesFieldMapColumnsJava(DDLToList: List[String]) = {
+  def populatesFieldMapColumnsJava(DDLToList: List[String]): String = {
     var mapColumnsString = ""
     val dates = getDatesFromDDL(DDLToList)
     dates.foreach(mapColumnsString += _ + "=String,")
@@ -21,7 +21,9 @@ object sqoopAux {
       v.foreach(mapColumnsString += _ + "=String,")
     }
 
-    mapColumnsString = mapColumnsString.substring(0, mapColumnsString.length - 1)
+    // TODO vedere se processo ingestion da errore con mapColumnJava= vuoto
+    if(mapColumnsString != "")
+      mapColumnsString = mapColumnsString.substring(0, mapColumnsString.length - 1)
     mapColumnsString
   }
 

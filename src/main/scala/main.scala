@@ -65,8 +65,6 @@ object main {
     val curatedPartitioningColumn: String = config.getString("curatedPartitioningColumn")
 
 
-
-
     val DDLToList = createDDLList(filePath)
 
 
