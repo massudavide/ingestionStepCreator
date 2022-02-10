@@ -37,6 +37,9 @@ object hiveCuratedAux {
     val getNumericToMap = getNumericFromDDL(DDLToList)
     val getDecimalToMap = getDecimalFromDDL(DDLToList)
 
+    // TODO accenti! nel Raw Hive ci possono essere stringe con backtick
+    // quindi nel confronto con datetime/numeric/decimal sbaglia
+    // es stringa 'unità_qualcosa' != unità_qualcosa
     var curatedTable = ""
     // per ogni riga di Hive Raw Table
     for (rawHive <- hiveRawToList) {
@@ -45,7 +48,6 @@ object hiveCuratedAux {
 
         if (getDateToArray contains rawHiveSplitted(0)) {
           curatedTable += rawHive.replace(rawHiveSplitted(0), rawHiveSplitted(0) + "_raw") + "\n"
-//          curatedTable += "\t" + rawHiveSplitted(0) + "_raw " + rawHiveSplitted(1) + "\n"
           break
         }
 

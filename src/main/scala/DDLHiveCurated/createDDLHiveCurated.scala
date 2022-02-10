@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 
 object createDDLHiveCurated {
-  def main(DDLToList: List[String], tableName: String, partitioning: Boolean, curatedPartitioningColumn: String) = {
+  def main(DDLToList: List[String], tableName: String, partitioning: Boolean, curatedPartitioningColumn: String, curatedHiveOutputPath: String) = {
     var hiveCuratedString = ""
 
     hiveCuratedString += "CREATE EXTERNAL TABLE IF NOT EXISTS ${hivevar:hive_db}.c_" + tableName.toLowerCase() + "\n"
@@ -22,7 +22,7 @@ object createDDLHiveCurated {
     hiveCuratedString += ";\n\n"
     hiveCuratedString += "ALTER TABLE ${hivevar:hive_db}.c_" + tableName.toLowerCase() + " SET tblproperties('EXTERNAL' = 'FALSE')\n;"
 
-    val output_path = "src/main/output/src/main/resources/deploy/local/summerbi/ddl/hive/curated/"
+    val output_path = curatedHiveOutputPath
     // create directory if it does not exists
     Files.createDirectories(Paths.get(output_path))
 

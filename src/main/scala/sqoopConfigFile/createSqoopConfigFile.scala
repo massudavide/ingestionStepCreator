@@ -6,7 +6,8 @@ import sqoopConfigFile.sqoopAux.{populatesFieldMapColumnsJava, getFirstPrimaryKe
 
 object createSqoopConfigFile {
 
-  def main(DDLToList: List[String], databaseName: String, sourceSystemName: String, tableName: String, checkColumn: String, ingestionMode: String, deleteTargetDir: Boolean) = {
+  def main(DDLToList: List[String], databaseName: String, sourceSystemName: String, tableName: String,
+           checkColumn: String, ingestionMode: String, deleteTargetDir: Boolean, sqoopOutputPath: String) = {
     var sqoopConfString = ""
 
     sqoopConfString += "connect=\"${environment." + sourceSystemName + ".jdbc.url}\"\n"
@@ -28,7 +29,8 @@ object createSqoopConfigFile {
     sqoopConfString += "mapColumnJava=" + populatesFieldMapColumnsJava(DDLToList)
     if (ingestionMode == "FULL") sqoopConfString += "\ndeleteTargetDir=" + deleteTargetDir.toString
 
-    val output_path = "src/main/output/src/main/resources/deploy/hdfs/layer_raw/ingestion_sqoop/conf/" + sourceSystemName + "/"
+
+    val output_path = sqoopOutputPath + sourceSystemName + "/"
     // create directory if it does not exists
     Files.createDirectories(Paths.get(output_path))
 

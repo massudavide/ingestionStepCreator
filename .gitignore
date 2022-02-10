@@ -3,3 +3,6 @@
 *.log
 **/target/
 *.sc
+InputFolder/*
+hiveDbReplaced
+output

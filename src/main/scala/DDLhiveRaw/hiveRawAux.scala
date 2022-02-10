@@ -17,7 +17,7 @@ object hiveRawAux {
         if (splittedLine(1) == "smallint") {
           nomeColTipoStr += " SMALLINT,\n"
         }
-        if (splittedLine(1) == ("bigint")) {
+        if (splittedLine(1) == "bigint") {
           nomeColTipoStr += " BIGINT,\n"
         }
         if (splittedLine(1).startsWith("numeric")) {

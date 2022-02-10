@@ -84,7 +84,7 @@ object createOozieProperties {
     return partParamsString
   }
 
-  def main(tableName: String, sourceSystemName: String, ingestionMode: String, partitioningFlag: Boolean, dateColumn: String) = {
+  def main(tableName: String, sourceSystemName: String, ingestionMode: String, partitioningFlag: Boolean, dateColumn: String, oozieOutputPath: String) = {
     var propertiesToString = ""
 
     propertiesToString += oozieSystemProperties + "\n"
@@ -94,7 +94,8 @@ object createOozieProperties {
     propertiesToString += sparkParameters + "\n"
     propertiesToString += partitioningParameters(partitioningFlag, dateColumn)
 
-    val output_path = "src/main/output/src/main/resources/deploy/local/layer_raw/job_oozie/conf/" + sourceSystemName +"/"
+//    val output_path = "src/main/output/src/main/resources/deploy/local/layer_raw/job_oozie/conf/" + sourceSystemName +"/"
+    val output_path = oozieOutputPath + sourceSystemName +"/"
     // create directory if it does not exists
     Files.createDirectories(Paths.get(output_path))
 

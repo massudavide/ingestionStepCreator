@@ -14,7 +14,8 @@ import scala.util.matching.Regex
 
 object CreateCleansingStandardizationSpark {
 
-  def main(DDLToList: List[String], tableName: String, checkColumn: String, sourceSystemName: String, ingestionMode: String) = {
+  def main(DDLToList: List[String], tableName: String, checkColumn: String, sourceSystemName: String,
+           ingestionMode: String, cleansingOutputPath: String) = {
     val tabellaRaw = "${hive.db.raw}.r_" + tableName.toLowerCase()
     val tabella_curated = "${hive.db.curated}.c_" + tableName.toLowerCase() + "_tmp"
     val raw_location = "${environment.datalake.hdfs.uri}/raw_data/${hive.db.raw}/r_" + tableName.toLowerCase()
@@ -55,7 +56,7 @@ object CreateCleansingStandardizationSpark {
       "LISTA_FUNZIONI" -> listaFunzioni.asJson
     )
 
-    val output_path = "src/main/output/src/main/resources/deploy/hdfs/layer_curated/cleansing_standardization_spark/conf/" + sourceSystemName + "/"
+    val output_path = cleansingOutputPath + sourceSystemName + "/"
     // create directory if it does not exists
     Files.createDirectories(Paths.get(output_path))
 

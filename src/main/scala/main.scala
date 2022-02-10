@@ -6,6 +6,7 @@ import DDLhiveRaw.createDDLHiveRaw
 import OozieProperties.createOozieProperties
 import auxFunctions.getDDLList.createDDLList
 import auxFunctions.getListofFiles.getUniqueNameFile
+import auxFunctions.manageAccent
 import cleansingStandardizationSpark.CreateCleansingStandardizationSpark
 import historizationConfiguration.createHistorizationConfiguration
 import sqoopConfigFile.createSqoopConfigFile
@@ -18,7 +19,16 @@ import scala.collection.mutable.ListBuffer
 
 object main {
 
-  def filesCreator(fileName: String, inputPath: String) = {
+  def filesCreator(fileName: String, inputPath: String,
+                   oozieOutputPath: String,
+                   sqoopOutputPath: String,
+                   cleansingOutputPath: String,
+                   historizationOutputPath: String,
+                   rawHiveOutputPath: String,
+                   curatedHiveOutputPath: String,
+                   integratedHiveOutputPath: String,
+                   synapseExternalOutputPath: String,
+                   synapseInternalOutputPath: String) = {
     val myConfigFile = new File(inputPath + fileName +".conf")
     val config = ConfigFactory.parseFile(myConfigFile)
 
@@ -52,28 +62,47 @@ object main {
     val dateColumn: String = config.getString("dateColumn")
     val curatedPartitioningColumn: String = config.getString("curatedPartitioningColumn")
 
+
+
+
     val DDLToList = createDDLList(filePath)
 
 
-    createOozieProperties.main(tableName, sourceSystemName, ingestionMode, partitioningFlag, dateColumn)
-    createSqoopConfigFile.main(DDLToList, databaseName, sourceSystemName, tableName, checkColumn, ingestionMode, deleteTargetDir)
-    CreateCleansingStandardizationSpark.main(DDLToList, tableName, checkColumn, sourceSystemName, ingestionMode)
-    createHistorizationConfiguration.main(DDLToList, tableName, checkColumn, sourceSystemName, historizationFlag, historization_columns, ingestionMode, POSSIBLE_PHYSICAL_DELETES, HISTORICIZATION_ORDERING_COLUMN)
-    createDDLHiveRaw.main(DDLToList, tableName)
-    createDDLHiveCurated.main(DDLToList, tableName, partitioningFlag, curatedPartitioningColumn)
-    createDDLHiveIntegrated.main(DDLToList, tableName)
-    createDDLSynapseExternal.main(DDLToList, tableName)
-    createDDLSynapseInternal.main(DDLToList, tableName, historizationFlag)
+    createOozieProperties.main(tableName, sourceSystemName, ingestionMode, partitioningFlag, dateColumn, oozieOutputPath)
+    createSqoopConfigFile.main(DDLToList, databaseName, sourceSystemName, tableName, checkColumn, ingestionMode, deleteTargetDir, sqoopOutputPath)
+    CreateCleansingStandardizationSpark.main(DDLToList, tableName, checkColumn, sourceSystemName, ingestionMode, cleansingOutputPath)
+    createHistorizationConfiguration.main(DDLToList, tableName, checkColumn, sourceSystemName, historizationFlag,
+      historization_columns, ingestionMode, POSSIBLE_PHYSICAL_DELETES, HISTORICIZATION_ORDERING_COLUMN, historizationOutputPath)
+    createDDLHiveRaw.main(DDLToList, tableName, rawHiveOutputPath)
+    createDDLHiveCurated.main(DDLToList, tableName, partitioningFlag, curatedPartitioningColumn, curatedHiveOutputPath)
+    createDDLHiveIntegrated.main(DDLToList, tableName, integratedHiveOutputPath)
+    createDDLSynapseExternal.main(DDLToList, tableName, synapseExternalOutputPath)
+    createDDLSynapseInternal.main(DDLToList, tableName, historizationFlag, synapseInternalOutputPath)
+
   }
 
-  def createFiles(listOfFiles: ListBuffer[String], inputPath: String) = {
-    if(listOfFiles.isEmpty) println("The directory is empty")
+  def createFiles(listOfFiles: ListBuffer[String],
+                  inputPath: String,
+                  oozieOutputPath: String,
+                  sqoopOutputPath: String,
+                  cleansingOutputPath: String,
+                  historizationOutputPath: String,
+                  rawHiveOutputPath: String,
+                  curatedHiveOutputPath: String,
+                  integratedHiveOutputPath: String,
+                  synapseExternalOutputPath: String,
+                  synapseInternalOutputPath: String) = {
+
+    if(listOfFiles.isEmpty) println("The directory is empty\nPath: " + inputPath)
     else{
+      println("--------------------- createFiles ---------------------\n")
       for(fileName <- listOfFiles){
-        println("working on: " + fileName)
-        filesCreator(fileName, inputPath)
+        println("creating files for table: " + fileName)
+        filesCreator(fileName, inputPath, oozieOutputPath, sqoopOutputPath, cleansingOutputPath,
+          historizationOutputPath, rawHiveOutputPath, curatedHiveOutputPath, integratedHiveOutputPath,
+          synapseExternalOutputPath, synapseInternalOutputPath)
       }
-      println("Done!")
+      println("\nDone!")
     }
   }
 
@@ -81,9 +110,28 @@ object main {
 
     val inputPath = "src/main/InputFolder/"
 
+    val oozieOutputPath = "src/main/output/src/main/resources/deploy/local/layer_raw/job_oozie/conf/"
+    val sqoopOutputPath = "src/main/output/src/main/resources/deploy/hdfs/layer_raw/ingestion_sqoop/conf/"
+    val cleansingOutputPath = "src/main/output/src/main/resources/deploy/hdfs/layer_curated/cleansing_standardization_spark/conf/"
+    val historizationOutputPath = "src/main/output/src/main/resources/deploy/hdfs/summerbi/conf/"
+    val rawHiveOutputPath = "src/main/output/src/main/resources/deploy/local/summerbi/ddl/hive/raw/"
+    val curatedHiveOutputPath = "src/main/output/src/main/resources/deploy/local/summerbi/ddl/hive/curated/"
+    val integratedHiveOutputPath = "src/main/output/src/main/resources/deploy/local/summerbi/ddl/hive/integrated/"
+    val synapseExternalOutputPath = "src/main/output/src/main/resources/deploy/local/summerbi/ddl/synapse/tables_allignment/"
+    val synapseInternalOutputPath = "src/main/output/src/main/resources/deploy/local/summerbi/ddl/synapse/tables_allignment/"
+
+
+
     val listOfFiles: ListBuffer[String] = getUniqueNameFile(inputPath)
 
-    createFiles(listOfFiles, inputPath)
+
+    createFiles(listOfFiles, inputPath, oozieOutputPath, sqoopOutputPath, cleansingOutputPath,
+      historizationOutputPath, rawHiveOutputPath, curatedHiveOutputPath, integratedHiveOutputPath,
+      synapseExternalOutputPath, synapseInternalOutputPath)
+
+    manageAccent.main(rawHiveOutputPath, curatedHiveOutputPath, integratedHiveOutputPath)
+
+    hiveDbVarReplacerMain.main()
 
     println("\n---------------------")
     println("Attention!\nPlease check the generated files before using them.")

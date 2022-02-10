@@ -8,13 +8,13 @@ import scala.io.Source
 
 object hiveDbReplacerAux{
 
-  def hiveDbReplacer(hive_db: String, environment_datalake_hdfs_uri: String, input_path: String, output_path: String) = {
-
+  def hiveDbReplacer(hive_db: String, environment_datalake_hdfs_uri: String, input_path: String, output_path: String, hiveTable: String) = {
+    println("\n---------------------  creating file with variable replaced for " + hiveTable + " Hive Tables --------------------- \n")
     val fileList = getListOfFiles(input_path)
 
     for(file <- fileList){
       val fileName = file.toString.strip().split("\\\\").last
-      println("working on: " + fileName)
+      println(fileName)
       val src = Source.fromFile(file)
       val iterator = src.getLines
       var fileReplacedString = ""
@@ -31,8 +31,8 @@ object hiveDbReplacerAux{
       }
       src.close()
 
-      Files.createDirectories(Paths.get(output_path))
-      Files.write(Paths.get(output_path + fileName), fileReplacedString.getBytes(StandardCharsets.UTF_8))
+      Files.createDirectories(Paths.get(output_path + hiveTable + "/"))
+      Files.write(Paths.get(output_path + hiveTable + "/" + fileName), fileReplacedString.getBytes(StandardCharsets.UTF_8))
     }
   }
 

@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 
 object createDDLSynapseExternal {
-  def main(DDLToList: List[String], tableName: String) = {
+  def main(DDLToList: List[String], tableName: String, synapseExternalOutputPath: String) = {
     var synapseExternalString = ""
 
     synapseExternalString += "SET ANSI_NULLS ON\n"
@@ -24,7 +24,7 @@ object createDDLSynapseExternal {
     synapseExternalString += "\t, FILE_FORMAT = [SynapseParquetFormat]\n"
     synapseExternalString += ")\nGO"
 
-    val output_path = "src/main/output/src/main/resources/deploy/local/summerbi/ddl/synapse/tables_allignment/"
+    val output_path = synapseExternalOutputPath
     // create directory if it does not exists
     Files.createDirectories(Paths.get(output_path))
 

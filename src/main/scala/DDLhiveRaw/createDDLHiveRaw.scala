@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 
 object createDDLHiveRaw {
-  def main(DDLToList: List[String], tableName: String) = {
+  def main(DDLToList: List[String], tableName: String, rawHiveOutputPath: String) = {
     var hiveRawString = ""
 
     hiveRawString += "CREATE EXTERNAL TABLE IF NOT EXISTS ${hivevar:hive_db}.r_" + tableName.toLowerCase() + "\n"
@@ -16,7 +16,7 @@ object createDDLHiveRaw {
     hiveRawString += "TBLPROPERTIES ('transactional'='false')\n"
     hiveRawString += ";"
 
-    val output_path = "src/main/output/src/main/resources/deploy/local/summerbi/ddl/hive/raw/"
+    val output_path = rawHiveOutputPath
     // create directory if it does not exists
     Files.createDirectories(Paths.get(output_path))
 

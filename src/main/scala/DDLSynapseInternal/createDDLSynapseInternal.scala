@@ -7,7 +7,7 @@ import java.nio.file.{Files, Paths}
 
 
 object createDDLSynapseInternal {
-  def main(DDLToList: List[String], tableName: String, historizationFlag: Boolean) = {
+  def main(DDLToList: List[String], tableName: String, historizationFlag: Boolean, synapseInternalOutputPath: String) = {
     var synapseInternalString = ""
 
     synapseInternalString += "SET ANSI_NULLS ON\nGO\n\n"
@@ -22,7 +22,7 @@ object createDDLSynapseInternal {
     synapseInternalString += "\tCLUSTERED COLUMNSTORE INDEX\n"
     synapseInternalString += ")\nGO"
 
-    val output_path = "src/main/output/src/main/resources/deploy/local/summerbi/ddl/synapse/tables_allignment/"
+    val output_path = synapseInternalOutputPath
     // create directory if it does not exists
     Files.createDirectories(Paths.get(output_path))
 
