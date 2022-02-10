@@ -15,7 +15,6 @@ exampleFile folder.
 <br>es: historization_columns="";
 - if the value is composed by two or more fields use double quotes.
 <br>es: historization_columns="s_cliente,x_rag_soc"
-- do not use semi
 
 <br>
 
