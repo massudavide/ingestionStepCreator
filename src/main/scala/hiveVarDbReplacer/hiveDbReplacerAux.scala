@@ -9,7 +9,7 @@ import scala.io.Source
 object hiveDbReplacerAux{
 
   def hiveDbReplacer(hive_db: String, environment_datalake_hdfs_uri: String, input_path: String, output_path: String, hiveTable: String) = {
-    println("\n---------------------  creating file with variable replaced for " + hiveTable + " Hive Tables --------------------- \n")
+    println("\n--------------------- creating files with variable replaced for " + hiveTable + " Hive Tables --------------------- \n")
     val fileList = getListOfFiles(input_path)
 
     for(file <- fileList){

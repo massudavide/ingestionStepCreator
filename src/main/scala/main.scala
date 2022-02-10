@@ -16,6 +16,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import hiveVarDbReplacer.hiveDbVarReplacer
 
 import scala.collection.mutable.ListBuffer
+import scala.util.control.Breaks.break
 
 
 object main {
@@ -94,15 +95,13 @@ object main {
                   synapseExternalOutputPath: String,
                   synapseInternalOutputPath: String) = {
 
-    if(listOfFiles.isEmpty) println("The directory is empty\nPath: " + inputPath)
-    else{
-      println("--------------------- creating Files ---------------------\n")
-      for(fileName <- listOfFiles){
-        println("creating files for table: " + fileName)
-        filesCreator(fileName, inputPath, oozieOutputPath, sqoopOutputPath, cleansingOutputPath,
-          historizationOutputPath, rawHiveOutputPath, curatedHiveOutputPath, integratedHiveOutputPath,
-          synapseExternalOutputPath, synapseInternalOutputPath)
-      }
+
+    println("--------------------- creating Files ---------------------\n")
+    for(fileName <- listOfFiles){
+      println(fileName)
+      filesCreator(fileName, inputPath, oozieOutputPath, sqoopOutputPath, cleansingOutputPath,
+        historizationOutputPath, rawHiveOutputPath, curatedHiveOutputPath, integratedHiveOutputPath,
+        synapseExternalOutputPath, synapseInternalOutputPath)
     }
   }
 
@@ -123,7 +122,10 @@ object main {
 
 
     val listOfFiles: ListBuffer[String] = getUniqueNameFile(inputPath)
-
+    if (listOfFiles.isEmpty) {
+      println("The directory is empty\nPath: " + inputPath)
+      break
+    }
 
     createFiles(listOfFiles, inputPath, oozieOutputPath, sqoopOutputPath, cleansingOutputPath,
       historizationOutputPath, rawHiveOutputPath, curatedHiveOutputPath, integratedHiveOutputPath,
