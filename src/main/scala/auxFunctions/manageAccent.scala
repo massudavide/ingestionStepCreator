@@ -47,7 +47,7 @@ object manageAccent {
       val iterator = src.getLines
 
       if(checkIfTableContainsAccent(file.toString)){
-        println("\nmanaging accent for " + fileName +" in " + hiveTable + " Hive table\n")
+        println("managing accent for " + fileName +" in " + hiveTable + " Hive table")
         val fileReplacedString = checkAndManageAccent(iterator)
         Files.createDirectories(Paths.get(input_path))
         Files.write(Paths.get(input_path + fileName), fileReplacedString.getBytes(StandardCharsets.UTF_8))

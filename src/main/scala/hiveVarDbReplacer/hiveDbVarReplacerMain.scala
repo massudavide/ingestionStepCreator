@@ -1,3 +1,5 @@
+package hiveVarDbReplacer
+
 import com.typesafe.config.ConfigFactory
 import hiveVarDbReplacer.hiveDbReplacerAux.hiveDbReplacer
 

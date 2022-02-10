@@ -13,6 +13,7 @@ import sqoopConfigFile.createSqoopConfigFile
 
 import java.io.File
 import com.typesafe.config.{Config, ConfigFactory}
+import hiveVarDbReplacer.hiveDbVarReplacerMain
 
 import scala.collection.mutable.ListBuffer
 
@@ -95,14 +96,13 @@ object main {
 
     if(listOfFiles.isEmpty) println("The directory is empty\nPath: " + inputPath)
     else{
-      println("--------------------- createFiles ---------------------\n")
+      println("--------------------- creating Files ---------------------\n")
       for(fileName <- listOfFiles){
         println("creating files for table: " + fileName)
         filesCreator(fileName, inputPath, oozieOutputPath, sqoopOutputPath, cleansingOutputPath,
           historizationOutputPath, rawHiveOutputPath, curatedHiveOutputPath, integratedHiveOutputPath,
           synapseExternalOutputPath, synapseInternalOutputPath)
       }
-      println("\nDone!")
     }
   }
 
@@ -133,7 +133,7 @@ object main {
 
     hiveDbVarReplacerMain.main()
 
-    println("\n---------------------")
+    println("\n---------------------\n")
     println("Attention!\nPlease check the generated files before using them.")
 
   }
