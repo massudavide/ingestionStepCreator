@@ -5,7 +5,7 @@ import hiveVarDbReplacer.hiveDbReplacerAux.hiveDbReplacer
 
 import java.io.File
 
-object hiveDbVarReplacerMain {
+object hiveDbVarReplacer {
   def main() = {
     val myConfigFile = new File("src/main/scala/hiveDbVarReplacer.conf")
     val config = ConfigFactory.parseFile(myConfigFile)

@@ -13,7 +13,7 @@ import sqoopConfigFile.createSqoopConfigFile
 
 import java.io.File
 import com.typesafe.config.{Config, ConfigFactory}
-import hiveVarDbReplacer.hiveDbVarReplacerMain
+import hiveVarDbReplacer.hiveDbVarReplacer
 
 import scala.collection.mutable.ListBuffer
 
@@ -131,7 +131,7 @@ object main {
 
     manageAccent.main(rawHiveOutputPath, curatedHiveOutputPath, integratedHiveOutputPath)
 
-    hiveDbVarReplacerMain.main()
+    hiveDbVarReplacer.main()
 
     println("\n---------------------\n")
     println("Attention!\nPlease check the generated files before using them.")
