@@ -7,10 +7,10 @@ object tables_alligment_Int {
 
     if (historizationFlag) allignmentTableString += "\tid_sk INT IDENTITY(1,1) NOT NULL,\n"
 
-    for (line <- DDLToList) {
-      val splittedLine = line.strip().split(" ")
-      if (line.contains("CONSTRAINT")) {
-        if(line.contains("PRIMARY KEY")){
+    for (lineRaw <- DDLToList) {
+      val splittedLine = lineRaw.strip().split(" ")
+      if (lineRaw.contains("CONSTRAINT")) {
+        if(lineRaw.contains("PRIMARY KEY")){
           if (historizationFlag) {
             allignmentTableString += "\td_caricamento datetime NULL,\n"
             allignmentTableString += "\tdata_inizio_validita datetime NULL,\n"
@@ -20,7 +20,7 @@ object tables_alligment_Int {
           else allignmentTableString += "\t" + "d_caricamento datetime NULL -- ,\n"
 
           allignmentTableString += "-- "
-          var replacedLine = line
+          var replacedLine = lineRaw
             .replace(splittedLine(1), "PK_" + tableName.toLowerCase())
 
           if(splittedLine(splittedLine.length-1) contains("),")){ replacedLine = replacedLine.replace("),", ")")}
@@ -29,7 +29,12 @@ object tables_alligment_Int {
         }
       }
       else {
-        val replacedLine = line
+        var replacedLine = lineRaw
+        if(splittedLine(1).startsWith("datetime")) {
+          replacedLine = lineRaw.replace(splittedLine(1), "datetime")
+        }
+
+        replacedLine = replacedLine
           .replace(splittedLine(0), splittedLine(0).toLowerCase())
         if(!replacedLine.startsWith("\t"))
           allignmentTableString += "\t"

@@ -58,7 +58,7 @@ object extractValuesFromDDL {
     var datesFromDDLArray = scala.collection.mutable.ArrayBuffer.empty[String]
     for (lineRaw <- DDLToList) {
       val line = lineRaw.strip().split(" ")
-      if (line(1) =="datetime") {
+      if (line(1).contains("datetime")) {
         datesFromDDLArray += line(0)
       }
     }
