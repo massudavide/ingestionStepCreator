@@ -34,8 +34,8 @@ object manageAccent {
   def checkIfTableContainsAccent(filePath: String): Boolean = {
     val DDLToList = createDDLList(filePath)
     for(line <- DDLToList){
-      val words = line.strip().split(" ")
-      if(accent(words(0))) return true
+      val splittedLine = line.strip().split(" ")
+      if(accent(splittedLine(0))) return true
     }
     return false
   }
@@ -80,7 +80,7 @@ object manageAccent {
     // if you need to find unicode of special char
     // https://www.fileformat.info/index.htm
     if (accent(word))
-      return ("\u0060" + word + "\u0060", true)
+      return ("\u0060" + word + "\u0060", true) // backtick + word + backtick
     else (word, false)
   }
 }

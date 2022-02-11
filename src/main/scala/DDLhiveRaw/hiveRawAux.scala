@@ -29,7 +29,7 @@ object hiveRawAux {
         if (splittedLine(1) == ("float")) {
           nomeColTipoStr += " DOUBLE,\n"
         }
-        if (splittedLine(1) == ("datetime")) {
+        if (splittedLine(1).startsWith("datetime")) {
           nomeColTipoStr += " STRING,\n"
         }
         if (splittedLine(1).startsWith("varchar")) {
