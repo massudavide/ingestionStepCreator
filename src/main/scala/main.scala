@@ -106,18 +106,19 @@ object main {
   def main(args: Array[String]) = {
 
     val inputPath = "src/main/InputFolder/"
+    val outputPath = "src/main/output/"
 
-    val oozieOutputPath = "src/main/output/src/main/resources/deploy/local/layer_raw/job_oozie/conf/"
-    val sqoopOutputPath = "src/main/output/src/main/resources/deploy/hdfs/layer_raw/ingestion_sqoop/conf/"
-    val cleansingOutputPath = "src/main/output/src/main/resources/deploy/hdfs/layer_curated/cleansing_standardization_spark/conf/"
-    val historizationOutputPath = "src/main/output/src/main/resources/deploy/hdfs/summerbi/conf/"
-    val rawHiveOutputPath = "src/main/output/src/main/resources/deploy/local/summerbi/ddl/hive/raw/"
-    val curatedHiveOutputPath = "src/main/output/src/main/resources/deploy/local/summerbi/ddl/hive/curated/"
-    val integratedHiveOutputPath = "src/main/output/src/main/resources/deploy/local/summerbi/ddl/hive/integrated/"
-    val synapseExternalOutputPath = "src/main/output/src/main/resources/deploy/local/summerbi/ddl/synapse/tables_allignment/"
-    val synapseInternalOutputPath = "src/main/output/src/main/resources/deploy/local/summerbi/ddl/synapse/tables_allignment/"
+    val oozieOutputPath = outputPath + "src/main/resources/deploy/local/layer_raw/job_oozie/conf/"
+    val sqoopOutputPath = outputPath + "src/main/resources/deploy/hdfs/layer_raw/ingestion_sqoop/conf/"
+    val cleansingOutputPath = outputPath + "src/main/resources/deploy/hdfs/layer_curated/cleansing_standardization_spark/conf/"
+    val historizationOutputPath = outputPath + "src/main/resources/deploy/hdfs/summerbi/conf/"
+    val rawHiveOutputPath = outputPath + "src/main/resources/deploy/local/summerbi/ddl/hive/raw/"
+    val curatedHiveOutputPath = outputPath + "src/main/resources/deploy/local/summerbi/ddl/hive/curated/"
+    val integratedHiveOutputPath = outputPath + "src/main/resources/deploy/local/summerbi/ddl/hive/integrated/"
+    val synapseExternalOutputPath = outputPath + "src/main/resources/deploy/local/summerbi/ddl/synapse/tables_allignment/"
+    val synapseInternalOutputPath = outputPath + "src/main/resources/deploy/local/summerbi/ddl/synapse/tables_allignment/"
 
-
+    val hiveReplacerOutputPath = outputPath + "hiveValueReplaced/"
 
     val listOfFiles: ListBuffer[String] = getUniqueNameFile(inputPath)
     if (listOfFiles.isEmpty) {
@@ -131,7 +132,7 @@ object main {
 
     manageAccent.main(rawHiveOutputPath, curatedHiveOutputPath, integratedHiveOutputPath)
 
-    hiveDbVarReplacer.main()
+    hiveDbVarReplacer.main(outputPath, hiveReplacerOutputPath)
 
     println("\n---------------------\n")
     println("Attention!\nPlease check the generated files before using them.")

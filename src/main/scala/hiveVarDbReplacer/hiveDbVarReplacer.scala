@@ -6,13 +6,10 @@ import hiveVarDbReplacer.hiveDbReplacerAux.hiveDbReplacer
 import java.io.File
 
 object hiveDbVarReplacer {
-  def main() = {
+  def main(input_path: String, output_path: String) = {
     val myConfigFile = new File("src/main/scala/hiveDbVarReplacer.conf")
     val config = ConfigFactory.parseFile(myConfigFile)
 
-    val output_path = config.getString("output_path")
-
-    val input_path = config.getString("input_path")
     val raw_input_path = input_path + "src/main/resources/deploy/local/summerbi/ddl/hive/raw/"
     val curated_input_path = input_path + "src/main/resources/deploy/local/summerbi/ddl/hive/curated"
     val integrated_input_path = input_path + "src/main/resources/deploy/local/summerbi/ddl/hive/integrated"
