@@ -105,7 +105,7 @@ object main {
 
   def main(args: Array[String]) = {
 
-    val inputPath = "src/main/InputFolder/"
+    val inputPath = "src/main/input/"
     val outputPath = "src/main/output/"
 
     val oozieOutputPath = outputPath + "src/main/resources/deploy/local/layer_raw/job_oozie/conf/"
