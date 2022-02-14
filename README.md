@@ -1,12 +1,12 @@
 ## In order to use this program you need to:
-1) Create 2 files in src/main/InputFolder/ path: table_name.conf and table_name.txt
-   <br>(If InputFolder does not exists, create it);
+1) Create 2 files in src/main/input/ path: table_name.conf and table_name.txt
+   <br>(If input does not exists, create it);
 2) Copy and paste DDL from the database into table_name.txt;
 3) Insert the appropriate configurations in the talbe_name.conf file;
 4) Run main class.
 
 If you are uncertain about how to do it, you can take example from the files in the 
-exampleFile folder.
+exampleFile folder or you can look at #create-txt-and-conf-files section.
 
 ## In conf file 
 - if historization_columns field is empty it will be replaced with checkColumn field
@@ -16,6 +16,26 @@ exampleFile folder.
 - if the value is composed by two or more fields use double quotes.
 <br>es: historization_columns="s_cliente,x_rag_soc"
 
+## Supported types:
+- int;
+- smallint;
+- bigint;
+- numeric;
+- decimal;
+- float;
+- datetime;
+- datetime2 (as datetime);
+- varchar;
+- bit.
+
+## Supported accents:
+- à; À;
+- è; È;
+- é; É;
+- ì; Ì;
+- ò; Ì;
+- ù; Ù.
+
 <br>
 
 ### SSH Hive file
@@ -23,11 +43,17 @@ exampleFile folder.
 If you want to create the three hive files in order to copy and paste them into hive pront 
 command, you can use hiveDbReplacer class.<br>
 It will create a copy of hive tables with these two variables replaced. <br>
-Be sure you replace the correct variable in hiveDbVarReplacer.conf.<br>
+Be sure you replace the correct variable in hiveDbVarReplacer.conf. <br>
+You can fine the files in "src/main/output/hiveValueReplaced" path.
+<br>
 <br>
 
 
 ---
+# Create txt and conf files
+<br><br>
+
+
 ### talbe_name.conf example
 databaseName=summer_Dati_telelettura.dbo<br>
 tableName=Press_Temp_Energ_Telelette<br>
