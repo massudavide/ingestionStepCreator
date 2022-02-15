@@ -47,7 +47,7 @@ exampleFile folder or you can look at #create-txt-and-conf-files section.
 If you want to create the three hive files in order to copy and paste them into hive pront 
 command, you can use hiveDbReplacer class.<br>
 It will create a copy of hive tables with these two variables replaced. <br>
-Be sure you replace the correct variable in hiveDbVarReplacer.conf. <br>
+Be sure you replace the correct variable in hiveDbVarReplacer.conf (src/main/scala/hiveDbVarReplacer.conf). <br>
 You can fine the files in "src/main/output/hiveValueReplaced" path.
 <br>
 <br>
