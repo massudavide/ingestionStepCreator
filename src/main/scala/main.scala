@@ -45,7 +45,7 @@ object main {
     val ingestionMode: String = config.getString("ingestionMode")
     val checkColumn: String = config.getString("checkColumn")
     // if ingestionMode is FULL set deleteTargetDil = true/false
-    val deleteTargetDir: Boolean = config.getString("deleteTargetDir").toBoolean
+    // val deleteTargetDir: Boolean = config.getString("deleteTargetDir").toBoolean
 
     // if some fields need to be historicized set historizationFlag to true
     val historizationFlag: Boolean = config.getString("historizationFlag").toBoolean
@@ -69,7 +69,7 @@ object main {
 
 
     createOozieProperties.main(tableName, sourceSystemName, ingestionMode, partitioningFlag, dateColumn, oozieOutputPath)
-    createSqoopConfigFile.main(DDLToList, databaseName, sourceSystemName, tableName, checkColumn, ingestionMode, deleteTargetDir, sqoopOutputPath)
+    createSqoopConfigFile.main(DDLToList, databaseName, sourceSystemName, tableName, checkColumn, ingestionMode, sqoopOutputPath)
     CreateCleansingStandardizationSpark.main(DDLToList, tableName, checkColumn, sourceSystemName, ingestionMode, cleansingOutputPath)
     createHistorizationConfiguration.main(DDLToList, tableName, checkColumn, sourceSystemName, historizationFlag,
       historization_columns, ingestionMode, POSSIBLE_PHYSICAL_DELETES, HISTORICIZATION_ORDERING_COLUMN, historizationOutputPath)

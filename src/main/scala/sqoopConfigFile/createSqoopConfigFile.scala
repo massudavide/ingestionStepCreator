@@ -7,7 +7,7 @@ import sqoopConfigFile.sqoopAux.{populatesFieldMapColumnsJava, getFirstPrimaryKe
 object createSqoopConfigFile {
 
   def main(DDLToList: List[String], databaseName: String, sourceSystemName: String, tableName: String,
-           checkColumn: String, ingestionMode: String, deleteTargetDir: Boolean, sqoopOutputPath: String) = {
+           checkColumn: String, ingestionMode: String, sqoopOutputPath: String) = {
     var sqoopConfString = ""
 
     sqoopConfString += "connect=\"${environment." + sourceSystemName + ".jdbc.url}\"\n"
@@ -27,8 +27,7 @@ object createSqoopConfigFile {
       sqoopConfString += "numMappers=4\n" // 1 for DELTA_DATE and 4 for FULL
     else sqoopConfString += "numMappers=1\n"
     sqoopConfString += "mapColumnJava=" + populatesFieldMapColumnsJava(DDLToList)
-    if (ingestionMode == "FULL") sqoopConfString += "\ndeleteTargetDir=" + deleteTargetDir.toString
-
+    if (ingestionMode == "FULL") sqoopConfString += "\ndeleteTargetDir=FULL"
 
     val output_path = sqoopOutputPath + sourceSystemName + "/"
     // create directory if it does not exists

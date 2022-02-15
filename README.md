@@ -53,15 +53,13 @@ You can fine the files in "src/main/output/hiveValueReplaced" path.
 # Create txt and conf files
 <br><br>
 
-
-### talbe_name.conf example
+### DELTA_DATE: talbe_name.conf example
 databaseName=summer_Dati_telelettura.dbo<br>
 tableName=Press_Temp_Energ_Telelette<br>
 sourceSystemName=telelettura<br>
 
 ingestionMode=DELTA_DATE<br>
 checkColumn=data_ultimo_aggiornamento<br>
-deleteTargetDir=false<br>
 POSSIBLE_PHYSICAL_DELETES=false<br>
 
 historizationFlag=false<br>
@@ -71,6 +69,24 @@ HISTORICIZATION_ORDERING_COLUMN=""<br>
 partitioningFlag=true<br>
 dateColumn=data_trace_quartoraria<br>
 curatedPartitioningColumn=annomese INT<br>
+---
+### FULL: talbe_name.conf example
+databaseName=summer_consistenze_imp.dbo<br>
+tableName=pressioni_portate_linee<br>
+sourceSystemName=anagrafica<br>
+
+ingestionMode=FULL<br>
+checkColumn=d_caricamento<br>
+POSSIBLE_PHYSICAL_DELETES=true<br>
+
+historizationFlag=false<br>
+historization_columns="tipologia_severita,descrizione_messaggio_diagnostica"<br>
+HISTORICIZATION_ORDERING_COLUMN=""<br>
+
+partitioningFlag=false<br>
+dateColumn=""<br>
+curatedPartitioningColumn=""<br>
+
 ---
 ### table_name.txt example
 remi_assoluto varchar(8) COLLATE Latin1_General_CI_AS NOT NULL,<br>
@@ -90,8 +106,6 @@ pressione_barometrica float NULL,<br>
 CONSTRAINT PK__Press_Te__800C7E7A2AED02FD PRIMARY KEY (remi_assoluto,num_linee_misura,data_trace_quartoraria,id_flow_computer)
 ---
 ### hiveDbVarReplacer.conf
-output_path=src/main/hiveDbReplaced/<br>
-input_path=src/main/output/<br>
 environment_datalake_hdfs_uri = "abfs://data@noprodcdp.dfs.core.windows.net"<br>
 raw_hive_db=1707_summer_r_svil<br>
 curated_hive_db=1707_summer_c_svil<br>
