@@ -16,6 +16,8 @@ exampleFile folder or you can look at #create-txt-and-conf-files section.
 - if the value is composed by two or more fields use double quotes.
 <br>es: historization_columns="s_cliente,x_rag_soc"
 
+## In .txt file
+- txt file must contains "CONSTRAINT" line
 ## Supported ingestionMode:
 - FULL;
 - DELTA_DATE.
