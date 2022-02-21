@@ -12,14 +12,14 @@ import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 import scala.util.matching.Regex
 
 
-object CreateCleansingStandardizationSpark {
+object createCleansingStandardizationSpark {
 
   def main(DDLToList: List[String], tableName: String, checkColumn: String, sourceSystemName: String,
-           ingestionMode: String, cleansingOutputPath: String) = {
+           processName: String, ingestionMode: String, cleansingOutputPath: String) = {
     val tabellaRaw = "${hive.db.raw}.r_" + tableName.toLowerCase()
-    val tabella_curated = "${hive.db.curated}.c_" + tableName.toLowerCase() + "_tmp"
+
     val raw_location = "${environment.datalake.hdfs.uri}/raw_data/${hive.db.raw}/r_" + tableName.toLowerCase()
-    val curated_lacation = "${environment.datalake.hdfs.uri}/curated_data/${hive.db.curated}/c_" + tableName.toLowerCase() + "_tmp"
+
 
     // lista per contenere LISTA_FUNZIONI
     var listaFunzioni = ListBuffer[Json]()
@@ -39,10 +39,23 @@ object CreateCleansingStandardizationSpark {
       "DATA_CREAZIONE" -> getDate.asJson,
       "VERSIONE" -> "1.0".asJson,
       "TABELLA_RAW"-> tabellaRaw.asJson,
-      "TABELLA_CURATED" -> tabella_curated.asJson,
+
+      if(processName=="summerbi")
+        "TABELLA_INTEGRATED" -> ("${hive.db.integrated}." + tableName.toLowerCase()).asJson
+      else // processName=="dco"
+        "TABELLA_CURATED" -> ("${hive.db.curated}.c_" + tableName.toLowerCase() + "_tmp").asJson,
+
       "FLAG_CLEANS_STAND"-> true.asJson,
       "RAW_LOCATION"-> raw_location.asJson,
-      "CURATED_LOCATION"-> curated_lacation.asJson,
+
+      if(processName=="summerbi")
+        "INTEGRATED_LOCATION"->
+          ("${environment.datalake.hdfs.uri}/integrated_data/${hive.db.integrated}/" + tableName.toLowerCase()).asJson
+      else
+        "CURATED_LOCATION"->
+          ("${environment.datalake.hdfs.uri}/curated_data/${hive.db.curated}/c_" + tableName.toLowerCase() + "_tmp").asJson,
+
+
       "UPDATE_RAW_LOCATION"-> false.asJson,
       "PARTIONED_RAW_TABLE"-> false.asJson,
       "CHECK_COLUMN"-> checkColumn.asJson,
@@ -56,7 +69,7 @@ object CreateCleansingStandardizationSpark {
       "LISTA_FUNZIONI" -> listaFunzioni.asJson
     )
 
-    val output_path = cleansingOutputPath + sourceSystemName + "/"
+    val output_path = cleansingOutputPath + processName + "/" + sourceSystemName + "/"
     // create directory if it does not exists
     Files.createDirectories(Paths.get(output_path))
 

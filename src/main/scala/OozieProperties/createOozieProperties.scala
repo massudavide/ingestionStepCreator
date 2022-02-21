@@ -19,13 +19,14 @@ object createOozieProperties {
     return  sysPropString
   }
 
-  def oozieCommonProperties(tableName: String, sourceSystemName: String, partitioningFlag: Boolean): String = {
+  def oozieCommonProperties(tableName: String, sourceSystemName: String, processName: String, partitioningFlag: Boolean): String = {
     var commPropString = ""
     commPropString += "### Common properties\n"
     commPropString += "kapp=${snam.kapp}\n"
     commPropString += "tableName=" + tableName.toLowerCase() + "\n"
     commPropString += "tablePartitionedInCurated=" + partitioningFlag + "\n"
     commPropString += "sourceSystemName=" + sourceSystemName + "\n"
+    commPropString += "processName="+ processName +"\n"
     commPropString += "baseHdfsPath=/user/${environment.user}\n"
     commPropString += "oozieHdfsPath=${nameNode}${baseHdfsPath}/layer_raw/job_oozie\n"
     commPropString += "sqoopHdfsPath=${nameNode}${baseHdfsPath}/layer_raw/ingestion_sqoop\n"
@@ -34,7 +35,7 @@ object createOozieProperties {
     return  commPropString
   }
 
-  def oozieObjectsProperties():String = {
+  def oozieObjectsProperties(processName: String):String = {
     var objPropString = ""
 
     objPropString += "### Oozie objects properties\n"
@@ -43,7 +44,13 @@ object createOozieProperties {
     objPropString += "frequenza=${coordinator.ingestion.shared.block1.frequency}\n"
     objPropString += "coordinatorPath=${oozieHdfsPath}/bin/coordinator.xml\n"
     objPropString += "coordinatorName=COORD_${kapp}_${tableName}_${sourceSystemName}${coordinator.environment.suffix}\n"
-    objPropString += "workflowPath=${oozieHdfsPath}/bin/workflow-summerbi.xml\n"
+
+    if(processName=="dco"){
+      objPropString += "workflowPath=${oozieHdfsPath}/bin/workflow-dco.xml\n"
+    }
+    else{
+      objPropString += "workflowPath=${oozieHdfsPath}/bin/workflow-summerbi.xml\n"
+    }
     objPropString += "workflowName=WF_${kapp}_${tableName}_${sourceSystemName}${coordinator.environment.suffix}\n"
 
     return  objPropString
@@ -84,18 +91,18 @@ object createOozieProperties {
     return partParamsString
   }
 
-  def main(tableName: String, sourceSystemName: String, ingestionMode: String, partitioningFlag: Boolean, dateColumn: String, oozieOutputPath: String) = {
+  def main(tableName: String, sourceSystemName: String, processName: String, ingestionMode: String, partitioningFlag: Boolean, dateColumn: String, oozieOutputPath: String) = {
     var propertiesToString = ""
 
     propertiesToString += oozieSystemProperties + "\n"
-    propertiesToString += oozieCommonProperties(tableName, sourceSystemName, partitioningFlag) + "\n"
-    propertiesToString += oozieObjectsProperties + "\n"
+    propertiesToString += oozieCommonProperties(tableName, sourceSystemName, processName, partitioningFlag) + "\n"
+    propertiesToString += oozieObjectsProperties(processName) + "\n"
     propertiesToString += sqoopParameters(ingestionMode) + "\n"
     propertiesToString += sparkParameters + "\n"
     propertiesToString += partitioningParameters(partitioningFlag, dateColumn)
 
 //    val output_path = "src/main/output/src/main/resources/deploy/local/layer_raw/job_oozie/conf/" + sourceSystemName +"/"
-    val output_path = oozieOutputPath + sourceSystemName +"/"
+    val output_path = oozieOutputPath + processName + "/" + sourceSystemName + "/"
     // create directory if it does not exists
     Files.createDirectories(Paths.get(output_path))
 

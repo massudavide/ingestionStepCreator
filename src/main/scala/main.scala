@@ -7,7 +7,7 @@ import OozieProperties.createOozieProperties
 import auxFunctions.getDDLList.createDDLList
 import auxFunctions.getListofFiles.getUniqueNameFile
 import auxFunctions.manageAccent
-import cleansingStandardizationSpark.CreateCleansingStandardizationSpark
+import cleansingStandardizationSpark.createCleansingStandardizationSpark
 import historizationConfiguration.createHistorizationConfiguration
 import sqoopConfigFile.createSqoopConfigFile
 
@@ -67,12 +67,22 @@ object main {
 
     val DDLToList = createDDLList(filePath)
 
+    // Oozie Prop for dco
+    createOozieProperties.main(tableName, sourceSystemName, "dco", ingestionMode, partitioningFlag, dateColumn, oozieOutputPath)
+    // Oozie Prop for summerbi
+    createOozieProperties.main(tableName, sourceSystemName, "summerbi", ingestionMode, partitioningFlag, dateColumn, oozieOutputPath)
 
-    createOozieProperties.main(tableName, sourceSystemName, ingestionMode, partitioningFlag, dateColumn, oozieOutputPath)
     createSqoopConfigFile.main(DDLToList, databaseName, sourceSystemName, tableName, checkColumn, ingestionMode, sqoopOutputPath)
-    CreateCleansingStandardizationSpark.main(DDLToList, tableName, checkColumn, sourceSystemName, ingestionMode, cleansingOutputPath)
+
+    // creansing Standard Sparf for dco
+    createCleansingStandardizationSpark.main(DDLToList, tableName, checkColumn, sourceSystemName, "dco", ingestionMode, cleansingOutputPath)
+    // creansing Standard Sparf for summerbi
+    createCleansingStandardizationSpark.main(DDLToList, tableName, checkColumn, sourceSystemName, "summerbi", ingestionMode, cleansingOutputPath)
+
+
     createHistorizationConfiguration.main(DDLToList, tableName, checkColumn, sourceSystemName, historizationFlag,
       historization_columns, ingestionMode, POSSIBLE_PHYSICAL_DELETES, HISTORICIZATION_ORDERING_COLUMN, historizationOutputPath)
+
     createDDLHiveRaw.main(DDLToList, tableName, rawHiveOutputPath)
     createDDLHiveCurated.main(DDLToList, tableName, partitioningFlag, curatedPartitioningColumn, curatedHiveOutputPath)
     createDDLHiveIntegrated.main(DDLToList, tableName, integratedHiveOutputPath)
