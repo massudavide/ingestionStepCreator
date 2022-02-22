@@ -95,6 +95,7 @@ curatedPartitioningColumn=""<br>
 
 ---
 ### table_name.txt example
+
 remi_assoluto varchar(8) COLLATE Latin1_General_CI_AS NOT NULL,<br>
 num_linee_misura int NOT NULL,<br>
 data_trace_quartoraria datetime NOT NULL,<br>
@@ -110,8 +111,10 @@ utente_ultimo_aggiornamento varchar(10) COLLATE Latin1_General_CI_AS NULL,<br>
 tipo_pressione_originale varchar(1) COLLATE Latin1_General_CI_AS NULL,<br>
 pressione_barometrica float NULL,<br>
 CONSTRAINT PK__Press_Te__800C7E7A2AED02FD PRIMARY KEY (remi_assoluto,num_linee_misura,data_trace_quartoraria,id_flow_computer)
+
 ---
 ### hiveDbVarReplacer.conf
+
 environment_datalake_hdfs_uri = "abfs://data@noprodcdp.dfs.core.windows.net"<br>
 raw_hive_db=1707_summer_r_svil<br>
 curated_hive_db=1707_summer_c_svil<br>
