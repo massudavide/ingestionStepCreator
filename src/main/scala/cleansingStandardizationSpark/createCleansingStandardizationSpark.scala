@@ -41,7 +41,7 @@ object createCleansingStandardizationSpark {
       "TABELLA_RAW"-> tabellaRaw.asJson,
 
       if(processName=="summerbi")
-        "TABELLA_INTEGRATED" -> ("${hive.db.integrated}." + tableName.toLowerCase()).asJson
+        "TABELLA_CURATED" -> ("${hive.db.integrated}." + tableName.toLowerCase()).asJson
       else // processName=="dco"
         "TABELLA_CURATED" -> ("${hive.db.curated}.c_" + tableName.toLowerCase() + "_tmp").asJson,
 
@@ -49,7 +49,7 @@ object createCleansingStandardizationSpark {
       "RAW_LOCATION"-> raw_location.asJson,
 
       if(processName=="summerbi")
-        "INTEGRATED_LOCATION"->
+        "CURATED_LOCATION"->
           ("${environment.datalake.hdfs.uri}/integrated_data/${hive.db.integrated}/" + tableName.toLowerCase()).asJson
       else
         "CURATED_LOCATION"->

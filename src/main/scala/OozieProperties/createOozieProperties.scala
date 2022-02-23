@@ -27,6 +27,7 @@ object createOozieProperties {
     commPropString += "tablePartitionedInCurated=" + partitioningFlag + "\n"
     commPropString += "sourceSystemName=" + sourceSystemName + "\n"
     commPropString += "processName="+ processName +"\n"
+    commPropString += "startCleansingAgain=false\n"
     commPropString += "baseHdfsPath=/user/${environment.user}\n"
     commPropString += "oozieHdfsPath=${nameNode}${baseHdfsPath}/layer_raw/job_oozie\n"
     commPropString += "sqoopHdfsPath=${nameNode}${baseHdfsPath}/layer_raw/ingestion_sqoop\n"
