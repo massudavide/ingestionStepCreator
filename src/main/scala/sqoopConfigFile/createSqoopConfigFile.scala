@@ -27,7 +27,7 @@ object createSqoopConfigFile {
       sqoopConfString += "numMappers=4\n" // 1 for DELTA_DATE and 4 for FULL
     else sqoopConfString += "numMappers=1\n"
     sqoopConfString += "mapColumnJava=" + populatesFieldMapColumnsJava(DDLToList)
-    if (ingestionMode == "FULL") sqoopConfString += "\ndeleteTargetDir=FULL"
+    if (ingestionMode == "FULL") sqoopConfString += "\ndeleteTargetDir=true"
 
     val output_path = sqoopOutputPath + sourceSystemName + "/"
     // create directory if it does not exists
