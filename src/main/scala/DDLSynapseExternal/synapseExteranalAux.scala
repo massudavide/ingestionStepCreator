@@ -128,6 +128,12 @@ object synapseExteranalAux {
             break()
           }
 
+          // varchar(MAX) to varchar(8000)
+          if(line.contains("varchar(MAX)")){
+            line = line.replace("varchar(MAX)", "varchar(8000)")
+            splittedLine = line.strip().split(" ")
+          }
+
           // if I'm here I need to append the whole line
           val replacedLine = line
             .replace(splittedLine(0), splittedLine(0).toLowerCase())

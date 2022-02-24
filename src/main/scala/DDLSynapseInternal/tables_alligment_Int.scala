@@ -47,8 +47,15 @@ object tables_alligment_Int {
           splittedLine = replacedLine.strip().split(" ")
         }
 
+        // datetime2 to datetime
         if(splittedLine(1).startsWith("datetime")) {
           replacedLine = lineRaw.replace(splittedLine(1), "datetime")
+        }
+
+        // varchar(MAX) to varchar(8000)
+        if(replacedLine.contains("varchar(MAX)")){
+          replacedLine = replacedLine.replace("varchar(MAX)", "varchar(8000)")
+          splittedLine = replacedLine.strip().split(" ")
         }
 
         replacedLine = replacedLine
