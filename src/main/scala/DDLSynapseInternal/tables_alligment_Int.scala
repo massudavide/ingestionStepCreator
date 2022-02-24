@@ -1,5 +1,7 @@
 package DDLSynapseInternal
 
+import auxFunctions.regexAux.getContentInRoundBracket
+
 object tables_alligment_Int {
 
   def allignment_Int_table(DDLToList: List[String], historizationFlag: Boolean, tableName: String): String = {
@@ -8,7 +10,7 @@ object tables_alligment_Int {
     if (historizationFlag) allignmentTableString += "\tid_sk INT IDENTITY(1,1) NOT NULL,\n"
 
     for (lineRaw <- DDLToList) {
-      val splittedLine = lineRaw.strip().split(" ")
+      var splittedLine = lineRaw.strip().split(" ")
       if (lineRaw.contains("CONSTRAINT")) {
         if(lineRaw.contains("PRIMARY KEY")){
           if (historizationFlag) {
@@ -30,12 +32,28 @@ object tables_alligment_Int {
       }
       else {
         var replacedLine = lineRaw
+
+        // remove IDENTITY from raw
+        if(lineRaw.contains("IDENTITY")){
+          val identity = " IDENTITY" + getContentInRoundBracket(splittedLine(2))
+          replacedLine = replacedLine.replace(identity, "")
+          splittedLine = replacedLine.strip().split(" ")
+        }
+
+        // remove DEAFAULT from raw
+        if(lineRaw.contains("DEFAULT")){
+          val default = " " + splittedLine(2) + " " + splittedLine(3)
+          replacedLine = replacedLine.replace(default, "")
+          splittedLine = replacedLine.strip().split(" ")
+        }
+
         if(splittedLine(1).startsWith("datetime")) {
           replacedLine = lineRaw.replace(splittedLine(1), "datetime")
         }
 
         replacedLine = replacedLine
           .replace(splittedLine(0), splittedLine(0).toLowerCase())
+
         if(!replacedLine.startsWith("\t"))
           allignmentTableString += "\t"
         allignmentTableString += replacedLine + "\n"

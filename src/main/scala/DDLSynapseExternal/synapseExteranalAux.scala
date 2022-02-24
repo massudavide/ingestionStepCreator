@@ -2,7 +2,7 @@ package DDLSynapseExternal
 
 import DDLHiveCurated.hiveCuratedAux
 import auxFunctions.extractValuesFromDDL.{getDatesFromDDL, getDecimalFromDDL, getNumericFromDDL}
-import auxFunctions.regexAux.{getValuesInRoundBrackets, regexValueWithoutSome}
+import auxFunctions.regexAux.{getContentInRoundBracket, getValuesInRoundBrackets, regexValueWithoutSome}
 import cleansingStandardizationSpark.cleanStandSparkAux
 
 import scala.collection.mutable
@@ -12,46 +12,46 @@ import scala.util.matching.Regex
 
 object synapseExteranalAux {
 
-    def replaceDecOrNumericRaw(numOrDecMap: mutable.Map[String, ArrayBuffer[String]], splittedLine: Array[String], line: String) = {
-      var appendElemString = ""
-      val findVarcharLength = new Regex("""\((.*?)\)""")
-      for ((k, v) <- numOrDecMap) {
-        breakable {
-          val varcharLengthRegex = regexValueWithoutSome(findVarcharLength, k)
-          val varcharLength = getValuesInRoundBrackets(varcharLengthRegex)._1 + 4
-          if (v contains splittedLine(0)) {
-            val replacedLine = line
-              .replace("\t", "")
-              .replace(splittedLine(0), splittedLine(0).toLowerCase() + "_raw")
-              .replace(splittedLine(1), "varchar(" + varcharLength + ")")
-            appendElemString += "\t" + replacedLine + "\n"
-            break
-          }
+  def replaceDecOrNumericRaw(numOrDecMap: mutable.Map[String, ArrayBuffer[String]], splittedLine: Array[String], line: String) = {
+    var appendElemString = ""
+    val findVarcharLength = new Regex("""\((.*?)\)""")
+    for ((k, v) <- numOrDecMap) {
+      breakable {
+        val varcharLengthRegex = regexValueWithoutSome(findVarcharLength, k)
+        val varcharLength = getValuesInRoundBrackets(varcharLengthRegex)._1 + 4
+        if (v contains splittedLine(0)) {
+          val replacedLine = line
+            .replace("\t", "")
+            .replace(splittedLine(0), splittedLine(0).toLowerCase() + "_raw")
+            .replace(splittedLine(1), "varchar(" + varcharLength + ")")
+          appendElemString += "\t" + replacedLine + "\n"
+          break
         }
       }
-      appendElemString
     }
+    appendElemString
+  }
 
-    def appendDecOrNum(numOrDecMap: mutable.Map[String, ArrayBuffer[String]], DDLToList:  List[String]) = {
-      var appendElemString = ""
-      for ((k,v) <- numOrDecMap) {
-        for(currentValue <- v){
-          breakable{
-            for (lineRaw <- DDLToList) {
-              val splittedLine = lineRaw.strip().split(" ")
-              if (splittedLine(0) == currentValue && !splittedLine.contains("CONSTRAINT")) {
-                val replacedLine = lineRaw
-                  .replace("\t", "")
-                  .replace(splittedLine(0), splittedLine(0).toLowerCase())
-                appendElemString += "\t" + replacedLine + "\n"
-                break
-              }
+  def appendDecOrNum(numOrDecMap: mutable.Map[String, ArrayBuffer[String]], DDLToList:  List[String]) = {
+    var appendElemString = ""
+    for ((k,v) <- numOrDecMap) {
+      for(currentValue <- v){
+        breakable{
+          for (lineRaw <- DDLToList) {
+            val splittedLine = lineRaw.strip().split(" ")
+            if (splittedLine(0) == currentValue && !splittedLine.contains("CONSTRAINT")) {
+              val replacedLine = lineRaw
+                .replace("\t", "")
+                .replace(splittedLine(0), splittedLine(0).toLowerCase())
+              appendElemString += "\t" + replacedLine + "\n"
+              break
             }
           }
         }
       }
-      appendElemString
     }
+    appendElemString
+  }
 
   def appendDates(dateMap: ArrayBuffer[String], DDLToList: List[String]) = {
     var appendElemString = ""
@@ -73,67 +73,84 @@ object synapseExteranalAux {
     appendElemString
   }
 
-    def allignment_Ext_table(DDLToList: List[String]): String = {
-      // get Date from DDL
-      val getDateToArray = getDatesFromDDL(DDLToList)
-      // get Numeric from DDL
-      val getNumericToMap = getNumericFromDDL(DDLToList)
-      // get decimal from DDL
-      val getDecimalToMap = getDecimalFromDDL(DDLToList)
 
-      var allignmentTableString = ""
-      for (lineRaw <- DDLToList) {
-        val line = lineRaw.replace("\t", "")
-        breakable{
-          if (!line.contains("CONSTRAINT")) {
-            val splittedLine = line.strip().split(" ")
 
-            // datetime
-            if (getDateToArray contains splittedLine(0)) {
-              val replacedLine = line
-                .replace(splittedLine(0), splittedLine(0).toLowerCase() + "_raw")
-                .replace(splittedLine(1), "varchar(30) COLLATE Latin1_General_CI_AS")
-              allignmentTableString += "\t" + replacedLine + "\n"
-              break
-            }
+  def allignment_Ext_table(DDLToList: List[String]): String = {
+    // get Date from DDL
+    val getDateToArray = getDatesFromDDL(DDLToList)
+    // get Numeric from DDL
+    val getNumericToMap = getNumericFromDDL(DDLToList)
+    // get decimal from DDL
+    val getDecimalToMap = getDecimalFromDDL(DDLToList)
 
-            // numeric
-            val numericRawsToString = replaceDecOrNumericRaw(getNumericToMap, splittedLine, line)
-            if (numericRawsToString != "") {
-              allignmentTableString += numericRawsToString
-              break()
-            }
+    var allignmentTableString = ""
+    for (lineRaw <- DDLToList) {
+      var line = lineRaw.replace("\t", "")
+      breakable{
+        if (!line.contains("CONSTRAINT")) {
 
-            // decimal
-            val decimalRawsToString = replaceDecOrNumericRaw(getDecimalToMap, splittedLine, line)
-            if (decimalRawsToString != "") {
-              allignmentTableString += decimalRawsToString
-              break()
-            }
+          var splittedLine = line.strip().split(" ")
 
-            // if I'm here I need to append the whole line
-            val replacedLine = line
-              .replace(splittedLine(0), splittedLine(0).toLowerCase())
-            allignmentTableString += "\t" + replacedLine + "\n"
-
+          // remove IDENTITY from raw
+          if(line.contains("IDENTITY")){
+            val identity = " IDENTITY" + getContentInRoundBracket(splittedLine(2))
+            line = line.replace(identity, "")
+            splittedLine = line.strip().split(" ")
           }
+
+          // remove DEAFAULT from raw
+          if(line.contains("DEFAULT")){
+            val default = " " + splittedLine(2) + " " + splittedLine(3)
+            line = line.replace(default, "")
+            splittedLine = line.strip().split(" ")
+          }
+
+          // datetime
+          if (getDateToArray contains splittedLine(0)) {
+            val replacedLine = line
+              .replace(splittedLine(0), splittedLine(0).toLowerCase() + "_raw")
+              .replace(splittedLine(1), "varchar(30) COLLATE Latin1_General_CI_AS")
+            allignmentTableString += "\t" + replacedLine + "\n"
+            break
+          }
+
+          // numeric
+          val numericRawsToString = replaceDecOrNumericRaw(getNumericToMap, splittedLine, line)
+          if (numericRawsToString != "") {
+            allignmentTableString += numericRawsToString
+            break()
+          }
+
+          // decimal
+          val decimalRawsToString = replaceDecOrNumericRaw(getDecimalToMap, splittedLine, line)
+          if (decimalRawsToString != "") {
+            allignmentTableString += decimalRawsToString
+            break()
+          }
+
+          // if I'm here I need to append the whole line
+          val replacedLine = line
+            .replace(splittedLine(0), splittedLine(0).toLowerCase())
+          allignmentTableString += "\t" + replacedLine + "\n"
+
         }
       }
-      allignmentTableString += "\t" + "d_caricamento_raw varchar(30) COLLATE Latin1_General_CI_AS NULL,\n"
-
-      // dates
-      allignmentTableString += appendDates(getDateToArray, DDLToList)
-
-      allignmentTableString += "\t" + "d_caricamento datetime NULL,\n"
-
-      // numeric
-      allignmentTableString += appendDecOrNum(getNumericToMap, DDLToList)
-      // decimal
-      allignmentTableString += appendDecOrNum(getDecimalToMap, DDLToList)
-
-      // remove ',' from last raw
-      allignmentTableString = allignmentTableString.substring(0, allignmentTableString.length - 2)
-
-      return allignmentTableString
     }
+    allignmentTableString += "\t" + "d_caricamento_raw varchar(30) COLLATE Latin1_General_CI_AS NULL,\n"
+
+    // dates
+    allignmentTableString += appendDates(getDateToArray, DDLToList)
+
+    allignmentTableString += "\t" + "d_caricamento datetime NULL,\n"
+
+    // numeric
+    allignmentTableString += appendDecOrNum(getNumericToMap, DDLToList)
+    // decimal
+    allignmentTableString += appendDecOrNum(getDecimalToMap, DDLToList)
+
+    // remove ',' from last raw
+    allignmentTableString = allignmentTableString.substring(0, allignmentTableString.length - 2)
+
+    return allignmentTableString
+  }
 }

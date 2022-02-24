@@ -9,6 +9,7 @@ object regexAux {
     }
     splitValueRegex.toString()
   }
+
   def getValuesInRoundBrackets(valuesInRoundBrackets: String): (Int, Int) = {
     val valuesWithoutRoundBrackets = valuesInRoundBrackets.substring(1, valuesInRoundBrackets.length - 1)
     val valuesSplitted = valuesWithoutRoundBrackets.split(",")
@@ -21,4 +22,9 @@ object regexAux {
     else return (38, 0)
   }
 
+  def getContentInRoundBracket(raw: String): String ={
+    val valuesInBracketRegex = new Regex("""\((.*?)\)""")
+    val content = regexValueWithoutSome(valuesInBracketRegex, raw)
+    return content
+  }
 }
