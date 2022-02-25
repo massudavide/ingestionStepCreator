@@ -93,14 +93,26 @@ object synapseExteranalAux {
 
           // remove IDENTITY from raw
           if(line.contains("IDENTITY")){
-            val identity = " IDENTITY" + getContentInRoundBracket(splittedLine(2))
+            var indice = 0
+            for(i <- splittedLine.indices){
+              if(splittedLine(i) == "IDENTITY"){
+                indice = i
+              }
+            }
+            val identity = " IDENTITY " + getContentInRoundBracket(splittedLine(indice + 1))
             line = line.replace(identity, "")
             splittedLine = line.strip().split(" ")
           }
 
           // remove DEAFAULT from raw
           if(line.contains("DEFAULT")){
-            val default = " " + splittedLine(2) + " " + splittedLine(3)
+            var indice = 0
+            for(i <- splittedLine.indices){
+              if(splittedLine(i) == "DEFAULT"){
+                indice = i
+              }
+            }
+            val default = " " + splittedLine(indice) + " " + splittedLine(indice + 1)
             line = line.replace(default, "")
             splittedLine = line.strip().split(" ")
           }
@@ -131,6 +143,12 @@ object synapseExteranalAux {
           // varchar(MAX) to varchar(8000)
           if(line.contains("varchar(MAX)")){
             line = line.replace("varchar(MAX)", "varchar(8000)")
+            splittedLine = line.strip().split(" ")
+          }
+
+          // varbinary(MAX) to varbinary(8000)
+          if(line.contains("varbinary(MAX)")){
+            line = line.replace("varbinary(MAX)", "varbinary(8000)")
             splittedLine = line.strip().split(" ")
           }
 

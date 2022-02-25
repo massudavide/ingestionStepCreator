@@ -34,15 +34,27 @@ object tables_alligment_Int {
         var replacedLine = lineRaw
 
         // remove IDENTITY from raw
-        if(lineRaw.contains("IDENTITY")){
-          val identity = " IDENTITY" + getContentInRoundBracket(splittedLine(2))
+        if(replacedLine.contains("IDENTITY")){
+          var indice = 0
+          for(i <- splittedLine.indices){
+            if(splittedLine(i) == "IDENTITY"){
+              indice = i
+            }
+          }
+          val identity = " IDENTITY " + getContentInRoundBracket(splittedLine(indice + 1))
           replacedLine = replacedLine.replace(identity, "")
           splittedLine = replacedLine.strip().split(" ")
         }
 
         // remove DEAFAULT from raw
-        if(lineRaw.contains("DEFAULT")){
-          val default = " " + splittedLine(2) + " " + splittedLine(3)
+        if(replacedLine.contains("DEFAULT")){
+          var indice = 0
+          for(i <- splittedLine.indices){
+            if(splittedLine(i) == "DEFAULT"){
+              indice = i
+            }
+          }
+          val default = " " + splittedLine(indice) + " " + splittedLine(indice + 1)
           replacedLine = replacedLine.replace(default, "")
           splittedLine = replacedLine.strip().split(" ")
         }
@@ -55,6 +67,12 @@ object tables_alligment_Int {
         // varchar(MAX) to varchar(8000)
         if(replacedLine.contains("varchar(MAX)")){
           replacedLine = replacedLine.replace("varchar(MAX)", "varchar(8000)")
+          splittedLine = replacedLine.strip().split(" ")
+        }
+
+        // varbinary(MAX) to varbinary(8000)
+        if(replacedLine.contains("varbinary(MAX)")){
+          replacedLine = replacedLine.replace("varbinary(MAX)", "varbinary(8000)")
           splittedLine = replacedLine.strip().split(" ")
         }
 

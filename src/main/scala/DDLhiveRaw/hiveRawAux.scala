@@ -38,6 +38,9 @@ object hiveRawAux {
         if (splittedLine(1) == ("bit")) {
           nomeColTipoStr += " BOOLEAN,\n"
         }
+        if (splittedLine(1).startsWith("varbinary")) {
+          nomeColTipoStr += " STRING,\n"
+        }
       }
     }
     nomeColTipoStr += "\td_caricamento STRING"
