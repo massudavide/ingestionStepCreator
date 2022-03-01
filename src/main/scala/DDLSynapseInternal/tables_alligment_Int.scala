@@ -1,5 +1,6 @@
 package DDLSynapseInternal
 
+import DDLSynapseExternal.synapseExteranalAux.{removeDefault, removeIdentity}
 import auxFunctions.regexAux.getContentInRoundBracket
 
 object tables_alligment_Int {
@@ -35,28 +36,16 @@ object tables_alligment_Int {
 
         // remove IDENTITY from raw
         if(replacedLine.contains("IDENTITY")){
-          var indice = 0
-          for(i <- splittedLine.indices){
-            if(splittedLine(i) == "IDENTITY"){
-              indice = i
-            }
-          }
-          val identity = " IDENTITY " + getContentInRoundBracket(splittedLine(indice + 1))
-          replacedLine = replacedLine.replace(identity, "")
-          splittedLine = replacedLine.strip().split(" ")
+          val identity = removeIdentity(replacedLine, splittedLine)
+          replacedLine = identity._1
+          splittedLine = identity._2
         }
 
         // remove DEAFAULT from raw
         if(replacedLine.contains("DEFAULT")){
-          var indice = 0
-          for(i <- splittedLine.indices){
-            if(splittedLine(i) == "DEFAULT"){
-              indice = i
-            }
-          }
-          val default = " " + splittedLine(indice) + " " + splittedLine(indice + 1)
-          replacedLine = replacedLine.replace(default, "")
-          splittedLine = replacedLine.strip().split(" ")
+          val default = removeDefault(replacedLine, splittedLine)
+          replacedLine = default._1
+          splittedLine = default._2
         }
 
         // datetime2 to datetime

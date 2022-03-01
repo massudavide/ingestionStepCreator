@@ -73,6 +73,31 @@ object synapseExteranalAux {
     appendElemString
   }
 
+  def removeIdentity(line: String, splittedLine: Array[String]): (String, Array[String]) ={
+    var indice = 0
+    for(i <- splittedLine.indices){
+      if(splittedLine(i).startsWith("IDENTITY")){
+        indice = i
+      }
+    }
+    val identity = " IDENTITY" + getContentInRoundBracket(splittedLine(indice))
+    val newLine = line.replace(identity, "")
+    val newSplittedLine = line.strip().split(" ")
+    return  (newLine, newSplittedLine)
+  }
+
+  def removeDefault(line: String, splittedLine: Array[String]): (String, Array[String]) ={
+    var indice = 0
+    for(i <- splittedLine.indices){
+      if(splittedLine(i) == "DEFAULT"){
+        indice = i
+      }
+    }
+    val default = " " + splittedLine(indice) + " " + splittedLine(indice + 1)
+    val newLine = line.replace(default, "")
+    val newSplittedLine = line.strip().split(" ")
+    return  (newLine, newSplittedLine)
+  }
 
 
   def allignment_Ext_table(DDLToList: List[String]): String = {
@@ -93,28 +118,17 @@ object synapseExteranalAux {
 
           // remove IDENTITY from raw
           if(line.contains("IDENTITY")){
-            var indice = 0
-            for(i <- splittedLine.indices){
-              if(splittedLine(i) == "IDENTITY"){
-                indice = i
-              }
-            }
-            val identity = " IDENTITY " + getContentInRoundBracket(splittedLine(indice + 1))
-            line = line.replace(identity, "")
-            splittedLine = line.strip().split(" ")
+            println("\n\n" + line)
+            val identity = removeIdentity(line, splittedLine)
+            line = identity._1
+            splittedLine = identity._2
           }
 
           // remove DEAFAULT from raw
           if(line.contains("DEFAULT")){
-            var indice = 0
-            for(i <- splittedLine.indices){
-              if(splittedLine(i) == "DEFAULT"){
-                indice = i
-              }
-            }
-            val default = " " + splittedLine(indice) + " " + splittedLine(indice + 1)
-            line = line.replace(default, "")
-            splittedLine = line.strip().split(" ")
+            val default = removeDefault(line, splittedLine)
+            line = default._1
+            splittedLine = default._2
           }
 
           // datetime
