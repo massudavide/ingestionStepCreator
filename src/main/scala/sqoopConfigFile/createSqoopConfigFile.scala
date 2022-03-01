@@ -23,8 +23,9 @@ object createSqoopConfigFile {
     sqoopConfString += "driver=mssql-jdbc-9.2.1.jre8.jar\n"
     sqoopConfString += "classDriver=com.microsoft.sqlserver.jdbc.SQLServerDriver\n"
     sqoopConfString += "fetchSize=10000\n"
+    // TODO numMappers a 4?
     if(ingestionMode == "FULL")
-      sqoopConfString += "numMappers=4\n" // 1 for DELTA_DATE and 4 for FULL
+      sqoopConfString += "numMappers=1\n" // 1 for DELTA_DATE and 4 for FULL
     else sqoopConfString += "numMappers=1\n"
     sqoopConfString += "mapColumnJava=" + populatesFieldMapColumnsJava(DDLToList)
     if (ingestionMode == "FULL") sqoopConfString += "\ndeleteTargetDir=true"
