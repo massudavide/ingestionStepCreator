@@ -38,11 +38,25 @@ object synapseExteranalAux {
       for(currentValue <- v){
         breakable{
           for (lineRaw <- DDLToList) {
-            val splittedLine = lineRaw.strip().split(" ")
+            var splittedLine = lineRaw.strip().split(" ")
             if (splittedLine(0) == currentValue && !splittedLine.contains("CONSTRAINT")) {
-              val replacedLine = lineRaw
+              var replacedLine = lineRaw
                 .replace("\t", "")
                 .replace(splittedLine(0), splittedLine(0).toLowerCase())
+
+              // remove IDENTITY from raw
+              if(replacedLine.contains("IDENTITY")){
+                val identity = removeIdentity(replacedLine, splittedLine)
+                replacedLine = identity._1
+                splittedLine = identity._2
+              }
+              // remove DEAFAULT from raw
+              if(replacedLine.contains("DEFAULT")){
+                val default = removeDefault(replacedLine, splittedLine)
+                replacedLine = default._1
+                splittedLine = default._2
+              }
+
               appendElemString += "\t" + replacedLine + "\n"
               break
             }
@@ -58,12 +72,26 @@ object synapseExteranalAux {
     for (data <- dateMap) {
       for (line <- DDLToList) {
         breakable{
-          val splittedLine = line.strip().split(" ")
+          var splittedLine = line.strip().split(" ")
           if (splittedLine(0) == data && !line.contains("CONSTRAINT")) {
-            val replacedLine = line
+            var replacedLine = line
               .replace("\t", "")
               .replace(splittedLine(0), splittedLine(0).toLowerCase())
               .replace(splittedLine(1), "datetime")
+
+            // remove IDENTITY from raw
+            if(replacedLine.contains("IDENTITY")){
+              val identity = removeIdentity(replacedLine, splittedLine)
+              replacedLine = identity._1
+              splittedLine = identity._2
+            }
+            // remove DEAFAULT from raw
+            if(replacedLine.contains("DEFAULT")){
+              val default = removeDefault(replacedLine, splittedLine)
+              replacedLine = default._1
+              splittedLine = default._2
+            }
+
             appendElemString += "\t" + replacedLine + "\n"
           }
           break()
@@ -82,11 +110,12 @@ object synapseExteranalAux {
     }
     val identity = " IDENTITY" + getContentInRoundBracket(splittedLine(indice))
     val newLine = line.replace(identity, "")
-    val newSplittedLine = line.strip().split(" ")
+    val newSplittedLine = newLine.strip().split(" ")
     return  (newLine, newSplittedLine)
   }
 
   def removeDefault(line: String, splittedLine: Array[String]): (String, Array[String]) ={
+    println("\n\n" + line)
     var indice = 0
     for(i <- splittedLine.indices){
       if(splittedLine(i) == "DEFAULT"){
@@ -95,7 +124,8 @@ object synapseExteranalAux {
     }
     val default = " " + splittedLine(indice) + " " + splittedLine(indice + 1)
     val newLine = line.replace(default, "")
-    val newSplittedLine = line.strip().split(" ")
+    val newSplittedLine = newLine.strip().split(" ")
+    println(newLine + "\n" + newSplittedLine.mkString(" ") + "\n\n")
     return  (newLine, newSplittedLine)
   }
 
@@ -129,6 +159,7 @@ object synapseExteranalAux {
             val default = removeDefault(line, splittedLine)
             line = default._1
             splittedLine = default._2
+            println("-------> " + line + "\n" + splittedLine.mkString(" "))
           }
 
           // datetime
