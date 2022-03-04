@@ -35,7 +35,7 @@ object hiveCuratedAux {
 
     val getDateTimeToArray = getDatesFromDDL(DDLToList, "datetime").map(_.toLowerCase())
     // TODO aggiungere date
-    val getDateToArray = getDatesFromDDL(DDLToList, "datetime").map(_.toLowerCase())
+    val getDateToArray = getDatesFromDDL(DDLToList, "date").map(_.toLowerCase())
     val getNumericToMap = getNumericFromDDL(DDLToList)
     val getDecimalToMap = getDecimalFromDDL(DDLToList)
 

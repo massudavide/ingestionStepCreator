@@ -8,7 +8,11 @@ object sqoopAux {
 
   def populatesFieldMapColumnsJava(DDLToList: List[String]): String = {
     var mapColumnsString = ""
-    val dates = getDatesFromDDL(DDLToList, "datetime")
+    val dateTime = getDatesFromDDL(DDLToList, "datetime")
+    // TODO aggiungere date
+    dateTime.foreach(mapColumnsString += _ + "=String,")
+
+    val dates = getDatesFromDDL(DDLToList, "date")
     // TODO aggiungere date
     dates.foreach(mapColumnsString += _ + "=String,")
 
