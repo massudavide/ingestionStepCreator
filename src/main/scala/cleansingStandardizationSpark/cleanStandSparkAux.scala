@@ -10,6 +10,8 @@ import scala.util.matching.Regex
 import io.circe.Json
 import io.circe.syntax._
 
+import scala.language.postfixOps
+
 
 object cleanStandSparkAux {
 
@@ -28,12 +30,15 @@ object cleanStandSparkAux {
   }
 
   def fromStringToDate(DDLToList: List[String], stringToTimestampList: ListBuffer[Json]) = {
-    val datesFunJson = Json.obj(
-      "NOME_FUNZIONE" -> "fromStringToDate".asJson,
-      "LISTA_PARAMETRI" -> Json.arr("yyyy-MM-dd".asJson),
-      "LISTA_CAMPI" -> getDatesFromDDL(DDLToList, "date").asJson
-    )
-    stringToTimestampList += datesFunJson
+    val getDates = getDatesFromDDL(DDLToList, "date")
+    if(getDates nonEmpty){
+      val datesFunJson = Json.obj(
+        "NOME_FUNZIONE" -> "fromStringToDate".asJson,
+        "LISTA_PARAMETRI" -> Json.arr("yyyy-MM-dd".asJson),
+        "LISTA_CAMPI" -> getDates.asJson
+      )
+      stringToTimestampList += datesFunJson
+    }
   }
 
   def fromStringToDecimal(getNumericOrDecimalMap:  mutable.Map[String, ArrayBuffer[String]], stringToDecimalList: ListBuffer[Json]) = {

@@ -134,7 +134,7 @@ object synapseExteranalAux {
     // get Date from DDL
     val getDateTimeToArray = getDatesFromDDL(DDLToList,"datetime")
     // TODO aggiungere date
-//    val getDateTimeToArray = getDatesFromDDL(DDLToList,"date")
+    val getDateToArray = getDatesFromDDL(DDLToList,"date")
     // get Numeric from DDL
     val getNumericToMap = getNumericFromDDL(DDLToList)
     // get decimal from DDL
@@ -166,6 +166,15 @@ object synapseExteranalAux {
 
           // datetime
           if (getDateTimeToArray contains splittedLine(0)) {
+            val replacedLine = line
+              .replace(splittedLine(0), splittedLine(0).toLowerCase() + "_raw")
+              .replace(splittedLine(1), "varchar(30) COLLATE Latin1_General_CI_AS")
+            allignmentTableString += "\t" + replacedLine + "\n"
+            break
+          }
+
+          // date
+          if (getDateToArray contains splittedLine(0)) {
             val replacedLine = line
               .replace(splittedLine(0), splittedLine(0).toLowerCase() + "_raw")
               .replace(splittedLine(1), "varchar(30) COLLATE Latin1_General_CI_AS")
@@ -209,8 +218,10 @@ object synapseExteranalAux {
     }
     allignmentTableString += "\t" + "d_caricamento_raw varchar(30) COLLATE Latin1_General_CI_AS NULL,\n"
 
-    // dates
+    // datetime
     allignmentTableString += appendDates(getDateTimeToArray, DDLToList, "datetime")
+    // date
+    allignmentTableString += appendDates(getDateToArray, DDLToList, "date")
 
     allignmentTableString += "\t" + "d_caricamento datetime NULL,\n"
 
