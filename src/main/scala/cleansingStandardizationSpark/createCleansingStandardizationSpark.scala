@@ -1,10 +1,10 @@
 package cleansingStandardizationSpark
 import auxFunctions.extractValuesFromDDL.{getDecimalFromDDL, getNumericFromDDL}
 import auxFunctions.regexAux.{getValuesInRoundBrackets, regexValueWithoutSome}
-import cleansingStandardizationSpark.cleanStandSparkAux.{fromStringToDecimal, fromStringToTimestamp, getDate}
-
+import cleansingStandardizationSpark.cleanStandSparkAux.{fromStringToDate, fromStringToDecimal, fromStringToTimestamp, getDate}
 import io.circe.Json
 import io.circe.syntax._
+
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 import scala.collection.mutable
@@ -26,6 +26,9 @@ object createCleansingStandardizationSpark {
 
     // "NOME_FUNZIONE" : "fromStringToTimestamp"
     fromStringToTimestamp(DDLToList, listaFunzioni)
+
+    // "NOME_FUNZIONE" : "fromStringToDate"
+    fromStringToDate(DDLToList, listaFunzioni)
 
     // "NOME_FUNZIONE" : "fromStringToDecimal"
     // numeric

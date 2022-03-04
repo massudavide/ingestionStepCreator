@@ -8,7 +8,8 @@ object sqoopAux {
 
   def populatesFieldMapColumnsJava(DDLToList: List[String]): String = {
     var mapColumnsString = ""
-    val dates = getDatesFromDDL(DDLToList)
+    val dates = getDatesFromDDL(DDLToList, "datetime")
+    // TODO aggiungere date
     dates.foreach(mapColumnsString += _ + "=String,")
 
     val numeric = getNumericFromDDL(DDLToList)
@@ -21,7 +22,6 @@ object sqoopAux {
       v.foreach(mapColumnsString += _ + "=String,")
     }
 
-    // TODO vedere se processo ingestion da errore con mapColumnJava= vuoto
     if(mapColumnsString != "")
       mapColumnsString = mapColumnsString.substring(0, mapColumnsString.length - 1)
     mapColumnsString

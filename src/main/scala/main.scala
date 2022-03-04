@@ -74,7 +74,7 @@ object main {
 
     createSqoopConfigFile.main(DDLToList, databaseName, sourceSystemName, tableName, checkColumn, ingestionMode, sqoopOutputPath)
 
-    // creansing Standard Sparf for dco
+    // creansing Standard Spark for dco
     createCleansingStandardizationSpark.main(DDLToList, tableName, checkColumn, sourceSystemName, "dco", ingestionMode, cleansingOutputPath)
     // creansing Standard Sparf for summerbi
     createCleansingStandardizationSpark.main(DDLToList, tableName, checkColumn, sourceSystemName, "summerbi", ingestionMode, cleansingOutputPath)

@@ -29,6 +29,9 @@ object hiveRawAux {
         if (splittedLine(1) == ("float")) {
           nomeColTipoStr += " DOUBLE,\n"
         }
+        if (splittedLine(1)== "date") {
+          nomeColTipoStr += " STRING,\n"
+        }
         if (splittedLine(1).startsWith("datetime")) {
           nomeColTipoStr += " STRING,\n"
         }

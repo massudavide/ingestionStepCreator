@@ -33,7 +33,9 @@ object hiveCuratedAux {
     if (hiveRawType == "") return "Error: hive Raw table empty"
     val hiveRawToList = hiveRawType.strip().split("\n")
 
-    val getDateToArray = getDatesFromDDL(DDLToList).map(_.toLowerCase())
+    val getDateTimeToArray = getDatesFromDDL(DDLToList, "datetime").map(_.toLowerCase())
+    // TODO aggiungere date
+    val getDateToArray = getDatesFromDDL(DDLToList, "datetime").map(_.toLowerCase())
     val getNumericToMap = getNumericFromDDL(DDLToList)
     val getDecimalToMap = getDecimalFromDDL(DDLToList)
 
@@ -45,6 +47,11 @@ object hiveCuratedAux {
     for (rawHive <- hiveRawToList) {
       breakable{
         val rawHiveSplitted = rawHive.strip().split(" ")
+
+        if (getDateTimeToArray contains rawHiveSplitted(0)) {
+          curatedTable += rawHive.replace(rawHiveSplitted(0), rawHiveSplitted(0) + "_raw") + "\n"
+          break
+        }
 
         if (getDateToArray contains rawHiveSplitted(0)) {
           curatedTable += rawHive.replace(rawHiveSplitted(0), rawHiveSplitted(0) + "_raw") + "\n"
@@ -84,6 +91,8 @@ object hiveCuratedAux {
     // bisogna aggiungere tutte le date, numeric e decimal
 
     // datetime
+    for (datatime <- getDateTimeToArray) curatedTable += "\t" + datatime.toLowerCase() + " TIMESTAMP,\n"
+
     for (data <- getDateToArray) curatedTable += "\t" + data.toLowerCase() + " TIMESTAMP,\n"
 
     curatedTable += "\t" + "d_caricamento TIMESTAMP,\n"

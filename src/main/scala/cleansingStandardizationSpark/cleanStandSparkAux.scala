@@ -14,14 +14,24 @@ import io.circe.syntax._
 object cleanStandSparkAux {
 
   def DatesPlusDCaricamento(DDLToList: List[String]): ArrayBuffer[String] = {
-    var tutteLeDateArray = getDatesFromDDL(DDLToList)
-    tutteLeDateArray += "d_caricamento"
+    var dateTimeArray = getDatesFromDDL(DDLToList, "datetime")
+    // TODO aggiungere date
+    dateTimeArray += "d_caricamento"
   }
   def fromStringToTimestamp(DDLToList: List[String], stringToTimestampList: ListBuffer[Json]) = {
     val datesFunJson = Json.obj(
       "NOME_FUNZIONE" -> "fromStringToTimestamp".asJson,
       "LISTA_PARAMETRI" -> Json.arr("yyyy-MM-dd HH:mm:ss".asJson),
       "LISTA_CAMPI" -> cleanStandSparkAux.DatesPlusDCaricamento(DDLToList).asJson
+    )
+    stringToTimestampList += datesFunJson
+  }
+
+  def fromStringToDate(DDLToList: List[String], stringToTimestampList: ListBuffer[Json]) = {
+    val datesFunJson = Json.obj(
+      "NOME_FUNZIONE" -> "fromStringToDate".asJson,
+      "LISTA_PARAMETRI" -> Json.arr("yyyy-MM-dd".asJson),
+      "LISTA_CAMPI" -> getDatesFromDDL(DDLToList, "date").asJson
     )
     stringToTimestampList += datesFunJson
   }

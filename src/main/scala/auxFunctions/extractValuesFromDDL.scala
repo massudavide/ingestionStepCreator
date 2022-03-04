@@ -54,11 +54,11 @@ object extractValuesFromDDL {
     return  mapWithDecimal
   }
 
-  def getDatesFromDDL(DDLToList: List[String]): ArrayBuffer[String] = {
+  def getDatesFromDDL(DDLToList: List[String], dateType: String): ArrayBuffer[String] = {
     var datesFromDDLArray = scala.collection.mutable.ArrayBuffer.empty[String]
     for (lineRaw <- DDLToList) {
       val line = lineRaw.strip().split(" ")
-      if (line(1).contains("datetime")) {
+      if (line(1) == dateType) {
         datesFromDDLArray += line(0)
       }
     }

@@ -67,7 +67,7 @@ object synapseExteranalAux {
     appendElemString
   }
 
-  def appendDates(dateMap: ArrayBuffer[String], DDLToList: List[String]) = {
+  def appendDates(dateMap: ArrayBuffer[String], DDLToList: List[String], dateType: String) = {
     var appendElemString = ""
     for (data <- dateMap) {
       for (line <- DDLToList) {
@@ -77,7 +77,7 @@ object synapseExteranalAux {
             var replacedLine = line
               .replace("\t", "")
               .replace(splittedLine(0), splittedLine(0).toLowerCase())
-              .replace(splittedLine(1), "datetime")
+              .replace(splittedLine(1), dateType)
 
             // remove IDENTITY from raw
             if(replacedLine.contains("IDENTITY")){
@@ -132,7 +132,9 @@ object synapseExteranalAux {
 
   def allignment_Ext_table(DDLToList: List[String]): String = {
     // get Date from DDL
-    val getDateToArray = getDatesFromDDL(DDLToList)
+    val getDateTimeToArray = getDatesFromDDL(DDLToList,"datetime")
+    // TODO aggiungere date
+//    val getDateTimeToArray = getDatesFromDDL(DDLToList,"date")
     // get Numeric from DDL
     val getNumericToMap = getNumericFromDDL(DDLToList)
     // get decimal from DDL
@@ -163,7 +165,7 @@ object synapseExteranalAux {
           }
 
           // datetime
-          if (getDateToArray contains splittedLine(0)) {
+          if (getDateTimeToArray contains splittedLine(0)) {
             val replacedLine = line
               .replace(splittedLine(0), splittedLine(0).toLowerCase() + "_raw")
               .replace(splittedLine(1), "varchar(30) COLLATE Latin1_General_CI_AS")
@@ -208,7 +210,7 @@ object synapseExteranalAux {
     allignmentTableString += "\t" + "d_caricamento_raw varchar(30) COLLATE Latin1_General_CI_AS NULL,\n"
 
     // dates
-    allignmentTableString += appendDates(getDateToArray, DDLToList)
+    allignmentTableString += appendDates(getDateTimeToArray, DDLToList, "datetime")
 
     allignmentTableString += "\t" + "d_caricamento datetime NULL,\n"
 
