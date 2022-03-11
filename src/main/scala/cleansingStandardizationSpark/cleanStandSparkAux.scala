@@ -23,7 +23,7 @@ object cleanStandSparkAux {
   def fromStringToTimestamp(DDLToList: List[String], stringToTimestampList: ListBuffer[Json]) = {
     val datesFunJson = Json.obj(
       "NOME_FUNZIONE" -> "fromStringToTimestamp".asJson,
-      "LISTA_PARAMETRI" -> Json.arr("yyyy-MM-dd HH:mm:ss".asJson),
+      "LISTA_PARAMETRI" -> Json.arr("yyyy-MM-dd HH:mm:ss.SSS".asJson),
       "LISTA_CAMPI" -> cleanStandSparkAux.DatesPlusDCaricamento(DDLToList).asJson
     )
     stringToTimestampList += datesFunJson
