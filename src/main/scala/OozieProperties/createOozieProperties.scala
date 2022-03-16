@@ -32,6 +32,7 @@ object createOozieProperties {
     commPropString += "oozieHdfsPath=${nameNode}${baseHdfsPath}/layer_raw/job_oozie\n"
     commPropString += "sqoopHdfsPath=${nameNode}${baseHdfsPath}/layer_raw/ingestion_sqoop\n"
     commPropString += "sparkHdfsPath=${nameNode}${baseHdfsPath}/layer_curated/cleansing_standardization_spark\n"
+    commPropString += "compattatoreHdfsPath=${nameNode}${baseHdfsPath}/layer_curated/compattatore_spark\n"
 
     return  commPropString
   }
@@ -92,6 +93,14 @@ object createOozieProperties {
     return partParamsString
   }
 
+  def compactionParameters(): String = {
+    var compactionParametersString = ""
+    compactionParametersString += "### Compaction parameters\n"
+    compactionParametersString += "folderSistemaSorgenteCompattatore=summer\n"
+    compactionParametersString += "frequenzaCompattatore=# 19-20 L # # #\n"
+    return compactionParametersString
+  }
+
   def main(tableName: String, sourceSystemName: String, processName: String, ingestionMode: String, partitioningFlag: Boolean, dateColumn: String, oozieOutputPath: String) = {
     var propertiesToString = ""
 
@@ -100,7 +109,8 @@ object createOozieProperties {
     propertiesToString += oozieObjectsProperties(processName) + "\n"
     propertiesToString += sqoopParameters(ingestionMode) + "\n"
     propertiesToString += sparkParameters + "\n"
-    propertiesToString += partitioningParameters(partitioningFlag, dateColumn)
+    propertiesToString += partitioningParameters(partitioningFlag, dateColumn) + "\n"
+    propertiesToString += compactionParameters()
 
 //    val output_path = "src/main/output/src/main/resources/deploy/local/layer_raw/job_oozie/conf/" + sourceSystemName +"/"
     val output_path = oozieOutputPath + processName + "/" + sourceSystemName + "/"
@@ -109,6 +119,4 @@ object createOozieProperties {
 
     Files.write(Paths.get(output_path + tableName.toLowerCase() +".properties"), propertiesToString.getBytes(StandardCharsets.UTF_8))
   }
-
-
 }
