@@ -1,19 +1,19 @@
-import DDLHiveCurated.createDDLHiveCurated
-import DDLHiveIntegrated.createDDLHiveIntegrated
-import DDLSynapseExternal.createDDLSynapseExternal
-import DDLSynapseInternal.createDDLSynapseInternal
-import DDLhiveRaw.createDDLHiveRaw
-import OozieProperties.createOozieProperties
-import auxFunctions.getDDLList.createDDLList
-import auxFunctions.getListofFiles.getUniqueNameFile
-import auxFunctions.manageAccent
-import cleansingStandardizationSpark.createCleansingStandardizationSpark
-import historizationConfiguration.createHistorizationConfiguration
-import sqoopConfigFile.createSqoopConfigFile
+import ingestion_step_creator_aux.DDLHiveCurated.createDDLHiveCurated
+import ingestion_step_creator_aux.DDLHiveIntegrated.createDDLHiveIntegrated
+import ingestion_step_creator_aux.DDLSynapseExternal.createDDLSynapseExternal
+import ingestion_step_creator_aux.DDLSynapseInternal.createDDLSynapseInternal
+import ingestion_step_creator_aux.DDLhiveRaw.createDDLHiveRaw
+import ingestion_step_creator_aux.OozieProperties.createOozieProperties
+import ingestion_step_creator_aux.auxFunctions.getDDLList.createDDLList
+import ingestion_step_creator_aux.auxFunctions.getListofFiles.getUniqueNameFile
+import ingestion_step_creator_aux.auxFunctions.manageAccent
+import ingestion_step_creator_aux.cleansingStandardizationSpark.createCleansingStandardizationSpark
+import ingestion_step_creator_aux.historizationConfiguration.createHistorizationConfiguration
+import ingestion_step_creator_aux.sqoopConfigFile.createSqoopConfigFile
 
 import java.io.File
 import com.typesafe.config.{Config, ConfigFactory}
-import hiveVarDbReplacer.hiveDbVarReplacer
+import ingestion_step_creator_aux.hiveVarDbReplacer.hiveDbVarReplacer
 
 import scala.collection.mutable.ListBuffer
 import scala.util.control.Breaks.break
@@ -74,9 +74,9 @@ object main {
 
     createSqoopConfigFile.main(DDLToList, databaseName, sourceSystemName, tableName, checkColumn, ingestionMode, sqoopOutputPath)
 
-    // creansing Standard Spark for dco
+    // cleansing Standard Spark for dco
     createCleansingStandardizationSpark.main(DDLToList, tableName, checkColumn, sourceSystemName, "dco", ingestionMode, cleansingOutputPath)
-    // creansing Standard Sparf for summerbi
+    // cleansing Standard Spark for summerbi
     createCleansingStandardizationSpark.main(DDLToList, tableName, checkColumn, sourceSystemName, "summerbi", ingestionMode, cleansingOutputPath)
 
 
@@ -84,7 +84,9 @@ object main {
       historization_columns, ingestionMode, POSSIBLE_PHYSICAL_DELETES, HISTORICIZATION_ORDERING_COLUMN, historizationOutputPath)
 
     createDDLHiveRaw.main(DDLToList, tableName, rawHiveOutputPath)
-    createDDLHiveCurated.main(DDLToList, tableName, partitioningFlag, curatedPartitioningColumn, curatedHiveOutputPath)
+    // create tmp raw
+    createDDLHiveRaw.main(DDLToList, tableName, rawHiveOutputPath, ingestionMode)
+
     createDDLHiveIntegrated.main(DDLToList, tableName, integratedHiveOutputPath)
     createDDLSynapseExternal.main(DDLToList, tableName, synapseExternalOutputPath)
     createDDLSynapseInternal.main(DDLToList, tableName, historizationFlag, synapseInternalOutputPath)
