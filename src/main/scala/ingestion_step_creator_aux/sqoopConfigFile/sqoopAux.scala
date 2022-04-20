@@ -16,15 +16,16 @@ object sqoopAux {
     // TODO aggiungere date
     dates.foreach(mapColumnsString += _ + "=String,")
 
-    val numeric = getNumericFromDDL(DDLToList)
-    for ((k,v) <- numeric){
-      v.foreach(mapColumnsString += _ + "=String,")
-    }
-
-    val decimal = getDecimalFromDDL(DDLToList)
-    for ((k,v) <- decimal){
-      v.foreach(mapColumnsString += _ + "=String,")
-    }
+    // TODO rimuove questa parte
+//    val numeric = getNumericFromDDL(DDLToList)
+//    for ((k,v) <- numeric){
+//      v.foreach(mapColumnsString += _ + "=String,")
+//    }
+//
+//    val decimal = getDecimalFromDDL(DDLToList)
+//    for ((k,v) <- decimal){
+//      v.foreach(mapColumnsString += _ + "=String,")
+//    }
 
     if(mapColumnsString != "")
       mapColumnsString = mapColumnsString.substring(0, mapColumnsString.length - 1)

@@ -30,11 +30,12 @@ object createCleansingStandardizationSpark {
     // "NOME_FUNZIONE" : "fromStringToDate"
     fromStringToDate(DDLToList, listaFunzioni)
 
+    // TODO rimuovere queste 5 righe
     // "NOME_FUNZIONE" : "fromStringToDecimal"
     // numeric
-    fromStringToDecimal(getNumericFromDDL(DDLToList), listaFunzioni)
+    //fromStringToDecimal(getNumericFromDDL(DDLToList), listaFunzioni)
     // decimal
-    fromStringToDecimal(getDecimalFromDDL(DDLToList), listaFunzioni)
+    //fromStringToDecimal(getDecimalFromDDL(DDLToList), listaFunzioni)
 
     //TODO implementare fromStringToDate
 

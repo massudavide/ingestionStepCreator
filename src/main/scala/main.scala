@@ -77,7 +77,7 @@ object main {
     // cleansing Standard Spark for dco
     createCleansingStandardizationSpark.main(DDLToList, tableName, checkColumn, sourceSystemName, "dco", ingestionMode, cleansingOutputPath)
     // cleansing Standard Spark for summerbi
-    createCleansingStandardizationSpark.main(DDLToList, tableName, checkColumn, sourceSystemName, "summerbi", ingestionMode, cleansingOutputPath)
+    // createCleansingStandardizationSpark.main(DDLToList, tableName, checkColumn, sourceSystemName, "summerbi", ingestionMode, cleansingOutputPath)
 
 
     createHistorizationConfiguration.main(DDLToList, tableName, checkColumn, sourceSystemName, historizationFlag,
