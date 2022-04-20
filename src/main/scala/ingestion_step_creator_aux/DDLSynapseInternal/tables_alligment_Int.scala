@@ -48,10 +48,11 @@ object tables_alligment_Int {
           splittedLine = default._2
         }
 
+        // TODO datetime2 va bene?
         // datetime2 to datetime
-        if(splittedLine(1).startsWith("datetime")) {
-          replacedLine = lineRaw.replace(splittedLine(1), "datetime")
-        }
+//        if(splittedLine(1).startsWith("datetime")) {
+//          replacedLine = lineRaw.replace(splittedLine(1), "datetime")
+//        }
 
         // varchar(MAX) to varchar(8000)
         if(replacedLine.contains("varchar(MAX)")){
